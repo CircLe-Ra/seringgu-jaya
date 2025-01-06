@@ -1,0 +1,59 @@
+@import url('../../public/font/GTWalsheimPro.css');
+@import url('../../public/3party/filepond/filepond.css');
+@import url('../../public/3party/filepond/filepond-plugin-image-preview.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS */
+[x-cloak] {
+    display: none !important;
+}
+
+.filepond--panel-root {
+    background-color: #dbdbdb;
+}
+
+.filepond--drop-label.filepond--drop-label label {
+    color: #333;
+}
+
+.dark .filepond--drop-label.filepond--drop-label label {
+    color: #f3f4f6;
+}
+
+.dark .filepond--panel-root {
+    background-color: #333;
+    /* Dark background for the panel */
+}
+
+.dark .filepond--drop-label {
+    color: #ddd;
+    /* Lighter text color for dark mode */
+}
+
+.dark .filepond--item-panel {
+    background-color: #444;
+    /* Dark background for file items */
+}
+
+.dark .filepond--drip-blob {
+    background-color: #555;
+    /* Dark background for the drop circle */
+}
+
+.dark .filepond--file-action-button {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+    /* Dark text/icon color for action buttons */
+}
+
+.dark [data-filepond-item-state*='error'] .filepond--item-panel {
+    background-color: #ff5555;
+    /* Darker red for errors */
+}
+
+.dark [data-filepond-item-state='processing-complete'] .filepond--item-panel {
+    background-color: #179517;
+    /* Darker green for success */
+}
