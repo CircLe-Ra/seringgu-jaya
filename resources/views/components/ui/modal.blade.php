@@ -91,7 +91,7 @@
                         const getModal = document.getElementById(event.id);
                         if (getModal) {
                             const wireModelElements = getModal.querySelectorAll('[wire\\:model]');
-                            const wireModels = [];
+                            const wireModels = ['id'];
                             wireModelElements.forEach(element => {
                                 const wireModelName = element.getAttribute('wire:model');
                                 wireModels.push(wireModelName);

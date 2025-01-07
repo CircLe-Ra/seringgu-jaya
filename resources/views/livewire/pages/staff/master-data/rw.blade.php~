@@ -1,0 +1,13 @@
+<?php
+
+use function Livewire\Volt\{state, layout, usesPagination};
+
+layout('layouts.app');
+usesPagination();
+state(['position','name','address','phone'])
+
+?>
+
+<div>
+    //
+</div>

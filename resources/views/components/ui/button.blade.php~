@@ -41,7 +41,7 @@
 
     switch ($tag) {
         case 'button':
-            $tagAttr = $attributes->has('submit') ? 'button type="submit"' : 'button type="button"';
+            $tagAttr = $attributes->has('submit') ? 'button type="submit"' : ($attributes->has('reset') ? 'button type="reset"' : 'button type="button"') 'button type="button"';
             $tagClose = 'button';
             break;
         case 'link':
@@ -62,7 +62,7 @@
             </span>
     @endisset
     @if($attributes->get('loading'))
-        <x-ui.loading class="text-black w-4 h-4" :name="$title ?? $slot" />
+        <x-ui.loading class="text-black w-4 h-4 me-1" :name="$title ?? $slot" />
     @elseif($attributes->get('loading-only'))
         <x-ui.loading class="text-black w-4 h-4" only-icon :name="$title ?? $slot" />
     @else

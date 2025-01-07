@@ -41,7 +41,7 @@
 
     switch ($tag) {
         case 'button':
-            $tagAttr = $attributes->has('submit') ? 'button type="submit"' : 'button type="button"';
+            $tagAttr = $attributes->has('submit') ? 'button type="submit"' : ($attributes->has('reset') ? 'button type="reset"' : 'button type="button"');
             $tagClose = 'button';
             break;
         case 'link':
