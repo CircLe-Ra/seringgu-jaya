@@ -1,7 +1,5 @@
 @props([
     'id' => null,
-    'name' => null,
-    'getData' => 'manual',
     'data' => [],
     'value' => 'id',
     'display_name' => 'name',
@@ -27,10 +25,10 @@
 
 <div class="{{ $mainClass }}">
     @isset($label)
-        <label for="{{ $id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ $label }}</label>
+        <x-ui.input-label for="{{ $id }}" :value="$label ?? 'label'" />
     @endisset
-    <select {{ $attributes->whereStartsWith('wire:model') }} id="{{ $id }}" name="{{ $name }}" {{ $attributes->merge(['class' => $size]) }} @disabled($disabled)>
-        @if ($getData == 'server')
+    <select {{ $attributes->whereStartsWith('wire:model') }} id="{{ $id }}" {{ $attributes->merge(['class' => $size]) }} @disabled($disabled)>
+        @if ($attributes->has('server'))
             <option @selected($selected_first) value="">{{ $display_name_first }}</option>
             @if (count($data))
                 @foreach ($data as $dt)
@@ -49,9 +47,7 @@
         @endif
     </select>
     @if($alert)
-        @error($name)
-            <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span> {{ $message }}</p>
-        @enderror
+        <x-ui.input-error class="mt-2" :messages="$errors->get($error ?? $attributes->get('wire:model'))" />
     @endif
 </div>
 

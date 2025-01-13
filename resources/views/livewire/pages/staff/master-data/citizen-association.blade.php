@@ -70,7 +70,7 @@ $destroy = function ($id) {
             [
                 'text' => 'Master Data'
             ],[
-                'text' => 'Rukun Warga',
+                'text' => 'Rukun Warga (RW)',
                 'href' => route('master-data.citizen-association')
             ]
         ]">
@@ -84,7 +84,7 @@ $destroy = function ($id) {
     </x-ui.breadcrumbs>
     <x-ui.modal id="citizen-association-modal">
         <x-slot name="header">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Warga</h5>
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Warga (RW)</h5>
         </x-slot>
         <x-slot name="content">
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
@@ -95,10 +95,10 @@ $destroy = function ($id) {
             <x-ui.input type="text" label="Alamat" wire:model="address" id="address" />
         </x-slot>
         <x-slot name="footer">
-            <x-ui.button reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
                 Batal
             </x-ui.button>
-            <x-ui.button loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" />
+            <x-ui.button  size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" />
         </x-slot>
     </x-ui.modal>
 
@@ -107,7 +107,7 @@ $destroy = function ($id) {
             <x-ui.card class="mt-2 w-full ">
                 <x-slot name="header">
                     <div>
-                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Warga</h5>
+                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Warga (RW)</h5>
                         <p class="text-sm text-gray-600 dark:text-gray-300">Daftar ketua rukun warga</p>
                     </div>
                 </x-slot>

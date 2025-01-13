@@ -278,5 +278,7 @@ return [
         'year'                     => 'tahun',
         'profile_path'             => 'foto profil',
         'position'                 => 'posisi',
+        'ca'                       => 'RW',
+        'na'                       => 'RT',
     ],
 ];

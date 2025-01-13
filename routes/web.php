@@ -15,6 +15,7 @@ Route::view('profile', 'profile')
 
 Route::middleware(['auth'])->group(function () {
     Volt::route('master-data/citizen-association', 'pages.staff.master-data.citizen-association')->name('master-data.citizen-association');
+    Volt::route('master-data/neighborhood-association', 'pages.staff.master-data.neighborhood-association')->name('master-data.neighborhood-association');
 });
 
 require __DIR__.'/auth.php';

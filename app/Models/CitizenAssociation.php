@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class CitizenAssociation extends Model
 {
     protected $guarded = ['id'];
+
+    public function neighborhoods()
+    {
+        return $this->hasMany(NeighborhoodAssociation::class);
+    }
 }
