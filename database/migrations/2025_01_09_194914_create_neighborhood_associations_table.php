@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('neighborhood_associations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->restrictOnDelete()->cascadeOnUpdate()->nullable();
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete()->cascadeOnUpdate()->nullable()->default(null);
             $table->foreignId('citizen_association_id')->constrained('citizen_associations')->restrictOnDelete()->cascadeOnUpdate();
             $table->string('position', 50);
             $table->string('name', 100);

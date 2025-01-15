@@ -2,6 +2,7 @@
 
 use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount};
 use App\Models\CitizenAssociation;
+use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
 usesPagination();
@@ -32,15 +33,21 @@ $save = function () {
         'address' => ['required', 'string'],
         'phone' => ['required', 'numeric'],
     ]);
-    CitizenAssociation::updateOrCreate([
-        'id' => $this->id
-    ], [
-        'name' => $this->name,
-        'phone' => $this->phone,
-        'address' => $this->address,
-        'position' => $this->position]);
-    unset($this->CAs);
-    $this->dispatch('close-modal', id:'citizen-association-modal');
+    try {
+        CitizenAssociation::updateOrCreate([
+            'id' => $this->id
+        ], [
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'position' => $this->position]);
+        unset($this->CAs);
+        $this->dispatch('close-modal', id: 'citizen-association-modal');
+        Toaster::success('Data berhasil disimpan!');
+    } catch (Exception $e) {
+        $this->dispatch('close-modal', id: 'citizen-association-modal');
+        Toaster::error($e->getMessage());
+    }
 };
 
 $edit = function ($id) {
@@ -50,13 +57,18 @@ $edit = function ($id) {
     $this->name = $CA->name;
     $this->address = $CA->address;
     $this->phone = $CA->phone;
-    $this->dispatch('open-modal', id:'citizen-association-modal');
+    $this->dispatch('open-modal', id: 'citizen-association-modal');
 };
 
 $destroy = function ($id) {
-    $CA = CitizenAssociation::find($id);
-    $CA->delete();
-    unset($this->CAs);
+    try {
+        $CA = CitizenAssociation::find($id);
+        $CA->delete();
+        unset($this->CAs);
+        Toaster::success('Data berhasil dihapus!');
+    }catch (Exception $e) {
+        Toaster::error($e->getMessage());
+    }
 }
 
 ?>
@@ -77,7 +89,16 @@ $destroy = function ($id) {
         <x-slot name="actions">
             <x-ui.input-icon id="search" wire:model.live="search" placeholder="Cari..." size="small">
                 <x-slot name="icon">
-                    <svg class="text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none"><path fill="currentColor" fill-opacity="0.25" fill-rule="evenodd" d="M12 19a7 7 0 1 0 0-14a7 7 0 0 0 0 14M10.087 7.38A5 5 0 0 1 12 7a.5.5 0 0 0 0-1a6 6 0 0 0-6 6a.5.5 0 0 0 1 0a5 5 0 0 1 3.087-4.62" clip-rule="evenodd"/><path stroke="currentColor" stroke-linecap="round" d="M20.5 20.5L17 17"/><circle cx="11" cy="11" r="8.5" stroke="currentColor"/></g></svg>
+                    <svg class="text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24"
+                         height="24" viewBox="0 0 24 24">
+                        <g fill="none">
+                            <path fill="currentColor" fill-opacity="0.25" fill-rule="evenodd"
+                                  d="M12 19a7 7 0 1 0 0-14a7 7 0 0 0 0 14M10.087 7.38A5 5 0 0 1 12 7a.5.5 0 0 0 0-1a6 6 0 0 0-6 6a.5.5 0 0 0 1 0a5 5 0 0 1 3.087-4.62"
+                                  clip-rule="evenodd"/>
+                            <path stroke="currentColor" stroke-linecap="round" d="M20.5 20.5L17 17"/>
+                            <circle cx="11" cy="11" r="8.5" stroke="currentColor"/>
+                        </g>
+                    </svg>
                 </x-slot>
             </x-ui.input-icon>
         </x-slot>
@@ -88,17 +109,19 @@ $destroy = function ($id) {
         </x-slot>
         <x-slot name="content">
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
-            <x-ui.input type="text" label="Jabatan" wire:model="position" id="position" />
-            <x-ui.input type="text" label="Nama" wire:model="name" id="name" />
+                <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position"/>
+                <x-ui.input type="text" label="Nama" wire:model="name" id="name"/>
             </div>
-            <x-ui.input type="tel" label="Nomor Telepon" wire:model="phone" id="phone" />
-            <x-ui.input type="text" label="Alamat" wire:model="address" id="address" />
+            <x-ui.input type="tel" label="Nomor Telepon" wire:model="phone" id="phone"/>
+            <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
         </x-slot>
         <x-slot name="footer">
-            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
+            <x-ui.button size="sm" reset color="light" class="mr-2"
+                         wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
                 Batal
             </x-ui.button>
-            <x-ui.button  size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" />
+            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
+                         wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save"/>
         </x-slot>
     </x-ui.modal>
 
@@ -121,7 +144,8 @@ $destroy = function ($id) {
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </x-ui.input-select>
-                        <x-ui.button wire:click="$dispatch('open-modal', { id :'citizen-association-modal'})" size="xs" color="blue">
+                        <x-ui.button wire:click="$dispatch('open-modal', { id :'citizen-association-modal'})" size="xs"
+                                     color="blue">
                             <span class="iconify duo-icons--add-circle w-4 h-4 me-1"></span>
                             Tambah
                         </x-ui.button>
@@ -151,7 +175,8 @@ $destroy = function ($id) {
                                         <span class="iconify carbon--edit w-3 h-3 me-1"></span>
                                         Ubah
                                     </x-ui.button>
-                                    <x-ui.button size="xs" color="red" wire:click="destroy({{ $CA->id }})" wire:confirm="Anda yakin ingin menghapus data ini?">
+                                    <x-ui.button size="xs" color="red" wire:click="destroy({{ $CA->id }})"
+                                                 wire:confirm="Anda yakin ingin menghapus data ini?">
                                         <span class="iconify carbon--delete w-3 h-3 me-1"></span>
                                         Hapus
                                     </x-ui.button>

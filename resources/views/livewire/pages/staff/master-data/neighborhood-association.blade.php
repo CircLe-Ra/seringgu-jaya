@@ -3,11 +3,13 @@
 use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount};
 use App\Models\CitizenAssociation;
 use App\Models\NeighborhoodAssociation;
+use Masmerise\Toaster\Toaster;
+use App\Models\User;
 
 layout('layouts.app');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
-state(['position', 'name', 'address', 'phone', 'id', 'ca']);
+state(['position', 'name', 'address', 'phone', 'id', 'ca', 'id_user', 'email', 'password', 'password_confirmation']);
 state(['citizen_associations' => []]);
 
 mount(function () {
@@ -34,11 +36,27 @@ $save = function () {
         'name' => ['required', 'string'],
         'address' => ['required', 'string'],
         'phone' => ['required', 'numeric'],
+        'email' => ['required', 'email', 'unique:users,email' . ($this->id ? ($this->id_user ? ',' . $this->id_user : '') : '')],
+        'password' => ($this->id ? ['nullable'] : ['required', 'confirmed']),
     ]);
+
     try {
+        $user = User::updateOrCreate([
+           'id' => $this->id_user
+        ], [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+            'role' => 'staff',
+            'status' => 'active',
+            'email_verified_at' => now(),
+            'remember_token' => \Illuminate\Support\Str::random(10),
+        ]);
+
         $na = NeighborhoodAssociation::updateOrCreate([
             'id' => $this->id
         ], [
+            'user_id' => $user->id,
             'citizen_association_id' => $this->ca,
             'name' => $this->name,
             'phone' => $this->phone,
@@ -47,21 +65,26 @@ $save = function () {
         ]);
         unset($this->NAs);
         $this->dispatch('close-modal', id: 'neighborhood-association-modal');
-        \Masmerise\Toaster\Toaster::success('Data berhasil disimpan!');
+        Toaster::success('Data berhasil disimpan!');
     } catch (Exception $e) {
         $this->dispatch('close-modal', id: 'neighborhood-association-modal');
-        \Masmerise\Toaster\Toaster::error($e->getMessage());
+        dd($e->getMessage());
+        Toaster::error($e->getMessage());
     }
 };
 
 $edit = function ($id) {
     $NA = NeighborhoodAssociation::find($id);
     $this->id = $NA->id;
+    $this->id_user = $NA->user_id;
     $this->ca = $NA->citizen_association_id;
     $this->position = $NA->position;
     $this->name = $NA->name;
     $this->address = $NA->address;
     $this->phone = $NA->phone;
+
+    $user = User::find($NA->user_id);
+    $this->email = $user->email;
     $this->dispatch('open-modal', id: 'neighborhood-association-modal');
 };
 
@@ -70,9 +93,9 @@ $destroy = function ($id) {
         $NA = NeighborhoodAssociation::find($id);
         $NA->delete();
         unset($this->NAs);
-        \Masmerise\Toaster\Toaster::success('Data berhasil dihapus!');
+        Toaster::success('Data berhasil dihapus!');
     } catch (Exception $e) {
-        \Masmerise\Toaster\Toaster::error($e->getMessage());
+        Toaster::error($e->getMessage());
     }
 }
 
@@ -113,16 +136,23 @@ $destroy = function ($id) {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Tetangga (RT)</h5>
         </x-slot>
         <x-slot name="content">
+            <input type="hidden" wire:model="id" />
+            <input type="hidden" wire:model="user_id" />
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
-                <x-ui.input-select label="Rukun Warga (RW)" wire:model="ca" id="ca" display_name="position" server
-                                   :data="$this->citizen_associations"/>
-                <x-ui.input type="text" label="Jabatan" wire:model="position" id="position"/>
+                <x-ui.input-select label="Rukun Warga (RW)" wire:model="ca" id="ca" display_name="position" server :data="$this->citizen_associations"/>
+                <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position"/>
             </div>
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
                 <x-ui.input type="text" label="Nama" wire:model="name" id="name"/>
                 <x-ui.input type="tel" label="Nomor Telepon" wire:model="phone" id="phone"/>
             </div>
             <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
+            <x-ui.devider class="w-full my-3 " label="Akun"/>
+            <x-ui.input type="email" label="Email" wire:model="email" id="email"/>
+            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
+                <x-ui.input type="password" label="Password" wire:model="password" id="password"/>
+                <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation"/>
+            </div>
         </x-slot>
         <x-slot name="footer">
             <x-ui.button size="sm" reset color="light" class="mr-2"
