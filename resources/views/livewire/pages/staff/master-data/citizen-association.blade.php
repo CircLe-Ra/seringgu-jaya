@@ -109,19 +109,17 @@ $destroy = function ($id) {
         </x-slot>
         <x-slot name="content">
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
-                <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position"/>
+                <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position" name="position"/>
                 <x-ui.input type="text" label="Nama" wire:model="name" id="name"/>
             </div>
             <x-ui.input type="tel" label="Nomor Telepon" wire:model="phone" id="phone"/>
             <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
         </x-slot>
         <x-slot name="footer">
-            <x-ui.button size="sm" reset color="light" class="mr-2"
-                         wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'citizen-association-modal' })">
                 Batal
             </x-ui.button>
-            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
-                         wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save"/>
+            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save"/>
         </x-slot>
     </x-ui.modal>
 

@@ -1,5 +1,4 @@
 @props(['label', 'id', 'size' => 'base', 'disabled' => false, 'placeholder', 'mainClass' => null, 'alert' => true, 'error' => null])
-
 @php
     $size = match ($size) {
         'large' => ' p-4 text-base',

@@ -12,4 +12,13 @@ class NeighborhoodAssociation extends Model
     {
         return $this->belongsTo(CitizenAssociation::class, 'citizen_association_id');
     }
+
+    public function user(){
+       return $this->belongsTo(User::class);
+    }
+
+    public function family_cards()
+    {
+        return $this->hasMany(FamilyCard::class);
+    }
 }

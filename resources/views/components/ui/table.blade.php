@@ -12,7 +12,7 @@
                     $mergeCell = Str::of($th)->explode(':');
                     $count = $mergeCell->count();
                 @endphp
-                <th scope="col" class="px-6 py-3" colspan="{{ $count ?? '' }}">
+                <th scope="col" class="px-6 py-3 " colspan="{{ $count ?? '' }}">
                     {{ $th }}
                 </th>
             @endforeach

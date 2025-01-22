@@ -9,8 +9,8 @@ use App\Models\User;
 layout('layouts.app');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
-state(['position', 'name', 'address', 'phone', 'id', 'ca', 'id_user', 'email', 'password', 'password_confirmation']);
-state(['citizen_associations' => []]);
+state(['position', 'name', 'address', 'phone', 'id', 'ca', 'user_id', 'email', 'password', 'password_confirmation']);
+state(['citizen_associations' => [], 'editData' => true]);
 
 mount(function () {
     $this->citizen_associations = CitizenAssociation::all();
@@ -25,6 +25,8 @@ $NAs = computed(function () {
 });
 
 on(['close-modal-reset' => function ($wireModels) {
+    $this->reset(['user_id', 'id']);
+    $this->editData = true;
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
 }]);
@@ -36,27 +38,30 @@ $save = function () {
         'name' => ['required', 'string'],
         'address' => ['required', 'string'],
         'phone' => ['required', 'numeric'],
-        'email' => ['required', 'email', 'unique:users,email' . ($this->id ? ($this->id_user ? ',' . $this->id_user : '') : '')],
-        'password' => ($this->id ? ['nullable'] : ['required', 'confirmed']),
+        'email' => (!$this->editData ? ['nullable'] : ['required', 'email', 'unique:users,email']),
+        'password' => (!$this->editData ? ['nullable'] : ['required', 'confirmed']),
     ]);
 
     try {
-        $user = User::updateOrCreate([
-           'id' => $this->id_user
-        ], [
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => bcrypt($this->password),
-            'role' => 'staff',
-            'status' => 'active',
-            'email_verified_at' => now(),
-            'remember_token' => \Illuminate\Support\Str::random(10),
-        ]);
+        if($this->editData) {
+            $user = User::updateOrCreate([
+               'id' => $this->user_id
+            ], [
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => bcrypt($this->password),
+                'role' => 'staff',
+                'status' => 'active',
+                'email_verified_at' => now(),
+                'remember_token' => \Illuminate\Support\Str::random(10),
+            ]);
+            $this->user_id = $user->id;
+        }
 
         $na = NeighborhoodAssociation::updateOrCreate([
             'id' => $this->id
         ], [
-            'user_id' => $user->id,
+            'user_id' => $this->user_id,
             'citizen_association_id' => $this->ca,
             'name' => $this->name,
             'phone' => $this->phone,
@@ -73,18 +78,42 @@ $save = function () {
     }
 };
 
+$updateAccount = function () {
+    $this->validate([
+        'email' => ['required', 'email', 'unique:users,email'],
+        'password' => ['required', 'confirmed'],
+    ]);
+    try {
+        $user = User::find($this->user_id);
+        $user->update([
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+        ]);
+        $this->dispatch('close-modal', id: 'neighborhood-association-account-modal');
+        Toaster::success('Data berhasil disimpan!');
+    } catch (Exception $e) {
+        $this->dispatch('close-modal', id: 'neighborhood-association-account-modal');
+        Toaster::error($e->getMessage());
+    }
+};
+
+$resetAccount = function ($id) {
+    $user = User::find($id);
+    $this->user_id = $user->id;
+    $this->email = $user->email;
+    $this->dispatch('open-modal', id: 'neighborhood-association-account-modal');
+};
+
 $edit = function ($id) {
     $NA = NeighborhoodAssociation::find($id);
     $this->id = $NA->id;
-    $this->id_user = $NA->user_id;
+    $this->user_id = $NA->user_id;
     $this->ca = $NA->citizen_association_id;
     $this->position = $NA->position;
     $this->name = $NA->name;
     $this->address = $NA->address;
     $this->phone = $NA->phone;
-
-    $user = User::find($NA->user_id);
-    $this->email = $user->email;
+    $this->editData = false;
     $this->dispatch('open-modal', id: 'neighborhood-association-modal');
 };
 
@@ -136,31 +165,49 @@ $destroy = function ($id) {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Tetangga (RT)</h5>
         </x-slot>
         <x-slot name="content">
-            <input type="hidden" wire:model="id" />
-            <input type="hidden" wire:model="user_id" />
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
                 <x-ui.input-select label="Rukun Warga (RW)" wire:model="ca" id="ca" display_name="position" server :data="$this->citizen_associations"/>
-                <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position"/>
+                <x-ui.input type="text" name="position" label="Jabatan (Ketua)" wire:model="position" id="position"/>
             </div>
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
                 <x-ui.input type="text" label="Nama" wire:model="name" id="name"/>
                 <x-ui.input type="tel" label="Nomor Telepon" wire:model="phone" id="phone"/>
             </div>
             <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
-            <x-ui.devider class="w-full my-3 " label="Akun"/>
+            <div x-data="{show: $wire.entangle('editData').live }">
+                <div x-show="show" x-cloak>
+                    <x-ui.devider class="w-full my-3 " label="Akun"/>
+                    <x-ui.input type="email" label="Email" wire:model="email" id="email"/>
+                    <div class="grid-cols-1 sm:grid-cols-2 grid gap-2 my-2">
+                        <x-ui.input type="password" label="Password" wire:model="password" id="password"/>
+                        <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation"/>
+                    </div>
+                </div>
+            </div>
+        </x-slot>
+        <x-slot name="footer">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'neighborhood-association-modal' })">
+                Batal
+            </x-ui.button>
+            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" />
+        </x-slot>
+    </x-ui.modal>
+    <x-ui.modal id="neighborhood-association-account-modal">
+        <x-slot name="header">
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Reset Akun Ketua (RT)</h5>
+        </x-slot>
+        <x-slot name="content">
             <x-ui.input type="email" label="Email" wire:model="email" id="email"/>
-            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
+            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2 my-2">
                 <x-ui.input type="password" label="Password" wire:model="password" id="password"/>
                 <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation"/>
             </div>
         </x-slot>
         <x-slot name="footer">
-            <x-ui.button size="sm" reset color="light" class="mr-2"
-                         wire:click="$dispatch('close-modal', { id: 'neighborhood-association-modal' })">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'neighborhood-association-account-modal' })">
                 Batal
             </x-ui.button>
-            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
-                         wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save"/>
+            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="updateAccount" />
         </x-slot>
     </x-ui.modal>
 
@@ -213,7 +260,7 @@ $destroy = function ($id) {
                                     {{ $NA->address }}
                                 </td>
                                 <td class="px-6 py-4 text-nowrap">
-                                    <x-ui.button size="xs" color="yellow" wire:click="edit({{ $NA->id }})" >
+                                    <x-ui.button size="xs" color="yellow" wire:click="resetAccount({{ $NA->id }})" >
                                         <span class="iconify carbon--user w-3 h-3 me-1"></span>
                                         Akun
                                     </x-ui.button>

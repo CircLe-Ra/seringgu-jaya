@@ -8,6 +8,7 @@
     'size' => 'md',
     'display_name_first' => 'Pilih?',
     'selected_first' => true,
+    'selected' => null,
     'mainClass' => null,
     'alert' => true,
 ])
@@ -32,7 +33,7 @@
             <option @selected($selected_first) value="">{{ $display_name_first }}</option>
             @if (count($data))
                 @foreach ($data as $dt)
-                    <option value="{{ $dt->$value }}">&nbsp;
+                    <option @selected($selected == $dt->$value) value="{{ $dt->$value }}">&nbsp;
                         @foreach ($dn as $d)
                             {{ $dt->$d }}
                             @if($d != end($dn)) || @endif
@@ -47,7 +48,7 @@
         @endif
     </select>
     @if($alert)
-        <x-ui.input-error class="mt-2" :messages="$errors->get($error ?? $attributes->get('wire:model'))" />
+        <x-ui.input-error class="mt-2" :messages="$errors->get($error ?? $attributes->get('wire:model') ?? $attributes->get('wire:model.live'))" />
     @endif
 </div>
 

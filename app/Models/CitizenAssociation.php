@@ -12,4 +12,9 @@ class CitizenAssociation extends Model
     {
         return $this->hasMany(NeighborhoodAssociation::class);
     }
+
+    public function family_cards()
+    {
+        return $this->hasMany(FamilyCard::class);
+    }
 }

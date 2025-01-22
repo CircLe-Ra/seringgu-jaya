@@ -4,12 +4,13 @@
     $size = match ($size) {
         'sm' => 'max-w-md',
         'md' => 'max-w-lg',
-        'lg' => 'max-w-4xl',
-        'xl' => 'max-w-7xl',
+        'lg' => 'max-w-2xl',
+        'xl' => 'max-w-4xl',
+        '2xl' => 'max-w-7xl',
     }
 @endphp
 
-<div wire:ignore id="{{ $id }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-[100] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div wire:ignore.self id="{{ $id }}" tabindex="-1" class="fixed top-0 left-0 right-0 z-[100] hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full {{ $size }} max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
@@ -90,14 +91,15 @@
                     onHide: () => {
                         const getModal = document.getElementById(event.id);
                         if (getModal) {
-                            const wireModelElements = getModal.querySelectorAll('[wire\\:model]');
+                            const wireModelElements = getModal.querySelectorAll('[wire\\:model], [wire\\:model\\.live]');
                             const wireModels = ['id'];
                             wireModelElements.forEach(element => {
-                                const wireModelName = element.getAttribute('wire:model');
+                                const wireModelName = element.getAttribute('wire:model') || element.getAttribute('wire:model.live');
                                 wireModels.push(wireModelName);
                             });
-                            $wire.$dispatch('close-modal-reset', { wireModels :wireModels });
+                            $wire.$dispatch('close-modal-reset', { wireModels });
                         }
+
                     },
                 });
             });
