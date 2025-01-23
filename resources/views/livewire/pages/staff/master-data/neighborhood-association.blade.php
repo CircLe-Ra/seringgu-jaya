@@ -1,12 +1,13 @@
 <?php
 
-use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount};
+use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount,title};
 use App\Models\CitizenAssociation;
 use App\Models\NeighborhoodAssociation;
 use Masmerise\Toaster\Toaster;
 use App\Models\User;
 
 layout('layouts.app');
+title('Rukun Tetangga (RT)');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
 state(['position', 'name', 'address', 'phone', 'id', 'ca', 'user_id', 'email', 'password', 'password_confirmation']);

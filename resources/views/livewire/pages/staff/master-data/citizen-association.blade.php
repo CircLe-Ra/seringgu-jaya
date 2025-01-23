@@ -1,10 +1,11 @@
 <?php
 
-use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount};
+use function Livewire\Volt\{computed, state, layout, usesPagination, on, mount, title};
 use App\Models\CitizenAssociation;
 use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
+title('Rukun Warga (RW)');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
 state(['position', 'name', 'address', 'phone', 'id']);

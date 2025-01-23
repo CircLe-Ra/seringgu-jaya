@@ -5,60 +5,22 @@ use App\Models\CitizenAssociation;
 use App\Models\NeighborhoodAssociation;
 use Masmerise\Toaster\Toaster;
 use App\Models\User;
-use App\Models\Province;
-use App\Models\Regency;
-use App\Models\District;
-use App\Models\SubDistrict;
 use App\Models\FamilyCard;
 
 layout('layouts.app');
-title('Penduduk');
+title('Anggota Keluarga');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
-state(['id','family_card_number','head_of_family','province_id','regency_id','district_id','sub_district_id','citizen_association_id','neighborhood_association_id','address','postal_code']);
-state(['cities' => [], 'districts' => [], 'sub_districts' => [], 'neighborhood_associations' => []]);
+state(['id']);
 
 mount(function () {
 });
-
-$provinces = computed(function () {
-    return Province::all();
-});
-
-$citizen_associations = computed(function () {
-    return CitizenAssociation::all();
-});
-
-updated(['province_id' => function () {
-    $this->cities = Regency::where('province_id', $this->province_id)->get();
-    $this->districts = [];
-    $this->sub_districts = [];
-    $this->regency_id = null;
-    $this->district_id = null;
-    $this->sub_district_id = null;
-}, 'regency_id' => function () {
-    $this->districts = District::where('regency_id', $this->regency_id)->get();
-    $this->sub_districts = [];
-    $this->district_id = null;
-    $this->sub_district_id = null;
-}, 'district_id' => function () {
-    $this->sub_districts = SubDistrict::where('district_id', $this->district_id)->get();
-    $this->sub_district_id = null;
-}, 'citizen_association_id' => function () {
-    $this->neighborhood_associations = NeighborhoodAssociation::where('citizen_association_id', $this->citizen_association_id)->get();
-}]);
 
 on(['close-modal-reset' => function ($wireModels) {
     $this->reset('id');
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
-    $this->cities = [];
-    $this->districts = [];
-    $this->sub_districts = [];
-    $this->neighborhood_associations = [];
-
 }]);
-
 
 $familyCards = computed(function () {
     return FamilyCard::where('family_card_number', 'like', '%' . $this->search . '%')
@@ -270,7 +232,7 @@ $destroy = function ($id) {
                                     {{ $familyCard->postal_code }}
                                 </td>
                                 <td class="px-6 py-4 ">
-                                    <x-ui.button class="w-24 mb-1" tag="link" size="xs" color="yellow" href="{{ route('neighborhood-association.inhabitant-detail', ['id' => $familyCard->id]) }}">
+                                    <x-ui.button class="w-24 mb-1" tag="link" size="xs" color="yellow" href="#">
                                         <span class="iconify carbon--user w-3 h-3 me-1"></span>
                                         Anggota
                                     </x-ui.button>

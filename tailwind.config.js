@@ -2,9 +2,7 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import flowbite from "flowbite/plugin";
 import { addIconSelectors } from "@iconify/tailwind";
-
-
-
+import tailwind_scrollbar from "tailwind-scrollbar";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -31,6 +29,7 @@ export default {
     },
 
     plugins: [
+        tailwind_scrollbar({ nocompatible: true }),
         forms,
         flowbite,
         addIconSelectors([

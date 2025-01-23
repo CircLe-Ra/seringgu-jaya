@@ -10,9 +10,9 @@ $logout = function (Logout $logout) {
 
 ?>
 
-<div>
-    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div class="px-3 py-3 lg:px-5 lg:pl-3">
+<div >
+    <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 ">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3 ">
             <div class="flex items-center justify-between">
                 <div class="flex items-center justify-start rtl:justify-end">
                     <button data-drawer-target="sidebar-multi-level-sidebar" data-drawer-toggle="sidebar-multi-level-sidebar" aria-controls="sidebar-multi-level-sidebar" type="button" class="inline-flex items-center p-2 mt-2 text-sm text-gray-500 rounded-lg ms-3 sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 z-[100]">
@@ -75,21 +75,65 @@ $logout = function (Logout $logout) {
         </div>
     </nav>
 
-    <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
-        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+    <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 " aria-label="Sidebar">
+        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
             <ul class="space-y-2 font-medium">
                 <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('dashboard') ? 'bg-gray-200 dark:bg-gray-700' : '' }}" wire:navigate>
-                        <span class="iconify duo-icons--dashboard w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></span>
+                        <svg class="flex-shrink-0 w-5 h-5  text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#00adff" fill-rule="evenodd" d="M19 11a2 2 0 0 1 1.995 1.85L21 13v6a2 2 0 0 1-1.85 1.995L19 21h-4a2 2 0 0 1-1.995-1.85L13 19v-6a2 2 0 0 1 1.85-1.995L15 11zm0-8a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" class="duoicon-secondary-layer" opacity="0.3" />
+                            <path fill="#00adff" fill-rule="evenodd" d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" class="duoicon-primary-layer" />
+                            <path fill="#00adff" fill-rule="evenodd" d="M9 15a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z" class="duoicon-secondary-layer" opacity="0.3" />
+                        </svg>
                         <span class="ms-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
+                    <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 group {{ request()->routeIs('master-data.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}" aria-controls="dropdown-portal" data-collapse-toggle="dropdown-portal">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="#00adff" fill-rule="evenodd" d="M20.424 15.804a5.38 5.38 0 0 0 0-7.608S14.81 2.399 14.046 2.07c-.036-.015-.033-.028-.03-.039c.004-.02.007-.031-.31-.031a.86.86 0 0 0-.861.86v2.243c0 .475.385.86.86.86h.933c1.98 0 3.586 1.366 3.586 3.347v5.38c0 1.98-1.605 3.346-3.586 3.346h-.933a.86.86 0 0 0-.86.861v2.242a.86.86 0 0 0 1.2.79c.765-.328 6.38-6.125 6.38-6.125m-9.27-10.701V2.86a.86.86 0 0 0-1.2-.79c-.765.329-6.38 6.125-6.38 6.125a5.38 5.38 0 0 0 0 7.608s5.615 5.797 6.38 6.126a.86.86 0 0 0 1.2-.79v-2.243a.86.86 0 0 0-.86-.86h-.933c-1.98 0-3.586-1.366-3.586-3.347V9.31c0-1.98 1.605-3.346 3.586-3.346h.933a.86.86 0 0 0 .86-.861" clip-rule="evenodd" />
+                        </svg>
+                        <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Portal</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <ul id="dropdown-portal" class="{{  request()->routeIs('master-data.*') ? 'block' : 'hidden'}} py-2 space-y-2">
+                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
+                            <span class="rounded-md px-2  text-white ">Beranda</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Sambutan Lurah</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Peta Kelurahan</a>
+                        </li>
+                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
+                            <span class="rounded-md px-2  text-white ">Profil</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Visi & Misi</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Bagan Kelurahan</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Struktur Organisasi</a>
+                        </li>
+                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
+                            <span class="rounded-md px-2  text-white ">Berita</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Berita</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
                     <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 group {{ request()->routeIs('master-data.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
                         <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12 10c4.418 0 8-1.79 8-4s-3.582-4-8-4s-8 1.79-8 4s3.582 4 8 4" />
-                            <path fill="currentColor" d="M4 12v6c0 2.21 3.582 4 8 4s8-1.79 8-4v-6c0 2.21-3.582 4-8 4s-8-1.79-8-4" opacity="0.5" />
-                            <path fill="currentColor" d="M4 6v6c0 2.21 3.582 4 8 4s8-1.79 8-4V6c0 2.21-3.582 4-8 4S4 8.21 4 6" opacity="0.7" />
+                            <path fill="#00adff" d="M12 10c4.418 0 8-1.79 8-4s-3.582-4-8-4s-8 1.79-8 4s3.582 4 8 4" />
+                            <path fill="#00adff" d="M4 12v6c0 2.21 3.582 4 8 4s8-1.79 8-4v-6c0 2.21-3.582 4-8 4s-8-1.79-8-4" opacity="0.5" />
+                            <path fill="#00adff" d="M4 6v6c0 2.21 3.582 4 8 4s8-1.79 8-4V6c0 2.21-3.582 4-8 4S4 8.21 4 6" opacity="0.7" />
                         </svg>
                         <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Master Data</span>
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -103,6 +147,25 @@ $logout = function (Logout $logout) {
                         <li>
                             <a href="{{ route('master-data.neighborhood-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.neighborhood-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Rukun Tetangga</a>
                         </li>
+                        <li>
+                            <a href="{{ route('master-data.religion') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.religion') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Agama</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.education') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.education') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Pendidikan</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.employment') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.employment') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Pekerjaan</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.blood-group') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.blood-group') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Golongan Darah</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.user') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.user') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Pengguna</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('master-data.role') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.role') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Peran Pengguna</a>
+                        </li>
+
                     </ul>
                 </li>
                 <li>
@@ -119,7 +182,7 @@ $logout = function (Logout $logout) {
                                 <path fill-rule="evenodd" d="M13 24.5c6.351 0 11.5-5.149 11.5-11.5S19.351 1.5 13 1.5S1.5 6.649 1.5 13S6.649 24.5 13 24.5m0 1c6.904 0 12.5-5.596 12.5-12.5S19.904.5 13 .5S.5 6.096.5 13S6.096 25.5 13 25.5" clip-rule="evenodd" />
                             </g>
                         </svg>
-                        <span class="ms-3">Warga</span>
+                        <span class="ms-3">Penduduk</span>
                     </a>
                 </li>
             </ul>
