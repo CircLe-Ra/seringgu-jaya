@@ -76,7 +76,7 @@ $logout = function (Logout $logout) {
     </nav>
 
     <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 " aria-label="Sidebar">
-        <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800 scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
+        <div class="h-full px-3 pb-4 bg-white dark:bg-gray-800 scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
             <ul class="space-y-2 font-medium">
                 <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('dashboard') ? 'bg-gray-200 dark:bg-gray-700' : '' }}" wire:navigate>
@@ -98,34 +98,23 @@ $logout = function (Logout $logout) {
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                         </svg>
                     </button>
-                    <ul id="dropdown-portal" class="{{  request()->routeIs('master-data.*') ? 'block' : 'hidden'}} py-2 space-y-2">
-                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
-                            <span class="rounded-md px-2  text-white ">Beranda</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Sambutan Lurah</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Peta Kelurahan</a>
-                        </li>
-                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
-                            <span class="rounded-md px-2  text-white ">Profil</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Visi & Misi</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Bagan Kelurahan</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Struktur Organisasi</a>
-                        </li>
-                        <li class="text-center rounded text-sm font-bold text-gray-900 dark:text-white bg-[#00adff]">
-                            <span class="rounded-md px-2  text-white ">Berita</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Berita</a>
-                        </li>
+                    <ul id="dropdown-portal" class="{{  request()->routeIs('master-data.*') ? 'block font-semibold' : 'hidden'}} py-1">
+                        <button type="button" class="flex items-center w-full p-2 text-base text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 group" aria-controls="dropdown-portal-home" data-collapse-toggle="dropdown-portal-home">
+                            <span class="flex-1 ms-10 text-left rtl:text-right whitespace-nowrap">Beranda</span>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                            </svg>
+                        </button>
+                        <ul id="dropdown-portal-home" class="{{ request()->routeIs('master-data.*') ? 'block' : 'hidden'}} py-1 space-y-1">
+                            <li>
+                                <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'font-semibold' : '' }}">Sambutan Lurah</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-16 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'font-semibold' : '' }}">Peta Kelurahan</a>
+                            </li>
+                        </ul>
+
+
                     </ul>
                 </li>
                 <li>
