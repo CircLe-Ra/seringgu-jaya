@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(NeighborhoodAssociation::class);
     }
+
+    public function family_member()
+    {
+        return $this->hasOne(FamilyMember::class);
+    }
 }

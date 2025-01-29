@@ -6,13 +6,6 @@ import {initFlowbite} from "flowbite";
 document.addEventListener('livewire:navigated', () => {
     initFlowbite();
 
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark')
-    }
-
     let themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     let themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
     let themeToggleCheckbox = document.getElementById('theme-toggle');
@@ -42,5 +35,4 @@ document.addEventListener('livewire:navigated', () => {
         }
     };
     themeToggleCheckbox.addEventListener('change', toggleDarkMode);
-
 });

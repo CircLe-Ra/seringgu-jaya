@@ -93,7 +93,7 @@ $destroy = function ($id) {
                 <x-slot name="header">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">Tambah Role</h5>
                 </x-slot>
-                <form wire:submit="store" class="max-w-sm mx-auto">
+                <form wire:submit="store" class="mx-auto">
                     <x-ui.input id="role_name" name="role_name" wire:model="role_name" main-class="mb-2" label="Nama Role" placeholder="Masukan Nama Role"/>
                     <div class="flex justify-end space-x-2">
                         <x-ui.button type="reset" color="light">Batal</x-ui.button>

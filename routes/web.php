@@ -3,17 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Route::view('/', 'welcome');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+Volt::route('/', 'pages.portal.home')->name('portal.home');
 
 Route::middleware(['auth'])->group(function () {
+    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::view('profile', 'profile')->name('profile');
+
     //staff
     //master-data
     Volt::route('master-data/citizen-association', 'pages.staff.master-data.citizen-association')->name('master-data.citizen-association');
@@ -24,12 +19,18 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('master-data/employment', 'pages.staff.master-data.employment')->name('master-data.employment');
     Volt::route('master-data/user', 'pages.staff.master-data.user')->name('master-data.user');
     Volt::route('master-data/role', 'pages.staff.master-data.role')->name('master-data.role');
+    Volt::route('master-data/letter-type', 'pages.staff.master-data.letter-type')->name('master-data.letter-type');
+    //Letter
+    Volt::route('letter/mail-box', 'pages.staff.letter.mail-box')->name('letter.mail-box');
     //portal
 //    Volt::route('master-data/role', 'pages.staff.master-data.role')->name('master-data.role');
 
     //RT
     Volt::route('neighborhood-association/inhabitant', 'pages.neighborhood-association.inhabitant')->name('neighborhood-association.inhabitant');
     Volt::route('neighborhood-association/inhabitant-detail/{id}', 'pages.neighborhood-association.inhabitant-detail')->name('neighborhood-association.inhabitant-detail');
+    Volt::route('neighborhood-association/letter', 'pages.neighborhood-association.letter')->name('neighborhood-association.letter');
+    Volt::route('neighborhood-association/trash-letter', 'pages.neighborhood-association.trash-letter')->name('neighborhood-association.trash-letter');
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/portal.php';

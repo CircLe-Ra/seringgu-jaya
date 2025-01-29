@@ -55,7 +55,7 @@ $save = function () {
                 'status' => 'active',
                 'email_verified_at' => now(),
                 'remember_token' => \Illuminate\Support\Str::random(10),
-            ]);
+            ])->assignRole('rt');
             $this->user_id = $user->id;
         }
 
@@ -81,7 +81,7 @@ $save = function () {
 
 $updateAccount = function () {
     $this->validate([
-        'email' => ['required', 'email', 'unique:users,email'],
+        'email' => ['required', 'email', 'unique:users,email' . ($this->user_id ? ',' . $this->user_id : '')],
         'password' => ['required', 'confirmed'],
     ]);
     try {
@@ -90,6 +90,7 @@ $updateAccount = function () {
             'email' => $this->email,
             'password' => bcrypt($this->password),
         ]);
+        $user->assignRole('rt');
         $this->dispatch('close-modal', id: 'neighborhood-association-account-modal');
         Toaster::success('Data berhasil disimpan!');
     } catch (Exception $e) {
@@ -261,7 +262,7 @@ $destroy = function ($id) {
                                     {{ $NA->address }}
                                 </td>
                                 <td class="px-6 py-4 text-nowrap">
-                                    <x-ui.button size="xs" color="yellow" wire:click="resetAccount({{ $NA->id }})" >
+                                    <x-ui.button size="xs" color="yellow" wire:click="resetAccount({{ $NA->user_id }})" >
                                         <span class="iconify carbon--user w-3 h-3 me-1"></span>
                                         Akun
                                     </x-ui.button>

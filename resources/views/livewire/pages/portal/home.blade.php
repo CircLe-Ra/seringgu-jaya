@@ -5,7 +5,6 @@ use function Livewire\Volt\{state, layout, title};
 layout('layouts.portal');
 title('Beranda');
 
-
 ?>
 
 <section class="bg-white dark:bg-gray-900">

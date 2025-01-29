@@ -1,9 +1,17 @@
 @import url('../../public/font/GTWalsheimPro.css');
 @import url('../../public/3party/filepond/filepond.css');
 @import url('../../public/3party/filepond/filepond-plugin-image-preview.css');
+@import 'jodit/es2021/jodit.css';
+@import 'simple-notify/dist/simple-notify.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body {
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
 
 /* Custom CSS */
 [x-cloak] {
@@ -56,4 +64,71 @@
 .dark [data-filepond-item-state='processing-complete'] .filepond--item-panel {
     background-color: #179517;
     /* Darker green for success */
+}
+
+
+/* DARK MODE */
+
+/* Container Jodit Editor */
+.dark .jodit-container {
+    background-color: #1a202c; /* Tailwind bg-gray-900 */
+    border-color: #2d3748; /* Tailwind border-gray-800 */
+    color: #e2e8f0; /* Tailwind text-gray-200 */
+}
+
+/* Toolbar Jodit (Header) */
+.dark .jodit-toolbar {
+    background-color: #2d3748; /* Tailwind bg-gray-800 */
+    border-color: #1f2a38; /* Tailwind border-gray-700 */
+    color: #e2e8f0; /* Tailwind text-gray-200 */
+}
+
+/* Konten (Editor Teks) */
+.dark .jodit-wysiwyg {
+    background-color: #171e29;
+    color: #e2e8f0; /* Tailwind text-gray-200 */
+}
+
+/* Tombol Toolbar */
+.dark .jodit-toolbar-button__button {
+    background-color: #374152;
+    color: #374152;
+}
+
+.dark .jodit-toolbar-button__button:hover {
+    background-color: #4c5663;
+    color: #4c5663;
+}
+
+.dark .jodit-toolbar-button__button:hover svg.jodit-icon {
+    fill: #fafafa;
+}
+
+
+.dark svg.jodit-icon {
+    fill: #9da4b0;
+}
+
+.dark .jodit-ui-group {
+    background-color: #374152;
+    color: #e2e8f0;
+}
+
+.dark .jodit-toolbar__box:not(:empty) {
+    --jd-color-background-default: #1f2a38;
+    overflow: hidden;
+    border-radius: var(--jd-border-radius-default) var(--jd-border-radius-default) 0 0;
+    border-bottom: 1px solid #1f2a38;
+    background-color: var(--jd-color-background-default);
+}
+.dark .jodit-toolbar__box:not(:empty) .jodit-toolbar-editor-collection::after {
+    background-color: #4c5663;
+}
+
+.dark .jodit-ui-separator {
+    padding: 0;
+    border-right: 1px solid #4c5663;
+    border-left: 0;
+    margin: 2px;
+    cursor: default;
 }

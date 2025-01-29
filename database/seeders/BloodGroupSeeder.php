@@ -13,7 +13,8 @@ class BloodGroupSeeder extends Seeder
             'A',
             'B',
             'AB',
-            'O'
+            'O',
+            'N/A',
         ];
 
         foreach ($bloodGroups as $bloodGroup) {

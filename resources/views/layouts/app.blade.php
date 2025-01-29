@@ -6,17 +6,24 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
-        <!-- Scripts -->
-        @stack('scripts')
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @stack('scripts')
+        <script>
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark')
+            }
+        </script>
     </head>
     <body class="bg-gray-100 dark:bg-gray-900 ">
         <livewire:layout.navigation />
-        <div class="py-4 px-2 sm:ml-64">
-            <div class="mt-12 rounded-lg dark:border-gray-700">
+        <div class="pt-4  sm:ml-64">
+            <div class="mt-12 rounded-lg dark:border-gray-700 px-2">
                 {{ $slot }}
             </div>
         </div>
         <x-toaster-hub />
+        @stack('scripts-bottom')
     </body>
 </html>

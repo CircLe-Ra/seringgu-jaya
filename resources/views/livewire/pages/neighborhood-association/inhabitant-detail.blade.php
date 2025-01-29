@@ -6,96 +6,150 @@ use App\Models\NeighborhoodAssociation;
 use Masmerise\Toaster\Toaster;
 use App\Models\User;
 use App\Models\FamilyCard;
+use App\Models\FamilyMember;
+use App\Models\Religion;
+use App\Models\Education;
+use App\Models\Employment;
+use App\Models\BloodGroup;
 
 layout('layouts.app');
 title('Anggota Keluarga');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
-state(['id']);
+state(['family_card_id' => fn($id) => $id])->locked();
+state(['id','family_card_number','head_of_family','province','regency','district','sub_district','citizen_association','neighborhood_association','address','postal_code']);
+state(['resident_identification_number', 'name', 'gender', 'birth_place', 'birth_date', 'religion_id', 'education_id', 'employment_id', 'blood_group_id','user_id','email','password','password_confirmation']);
+state(['position'=> 'familiar']);
 
 mount(function () {
+    $family_card = FamilyCard::find($this->family_card_id);
+    $this->family_card_number = $family_card->family_card_number;
+    $this->head_of_family = $family_card->head_of_family;
+    $this->province = $family_card->province->name;
+    $this->regency = $family_card->regency->name;
+    $this->district = $family_card->district->name;
+    $this->sub_district = $family_card->sub_district->name;
+    $this->citizen_association = $family_card->citizen->position;
+    $this->neighborhood_association = $family_card->neighborhood->position;
+    $this->address = $family_card->address;
+    $this->postal_code = $family_card->postal_code;
+});
+$religions = computed(function () {
+    return Religion::all();
+});
+$educations = computed(function () {
+    return Education::all();
+});
+$employments = computed(function () {
+    return Employment::all();
+});
+$blood_groups = computed(function () {
+    return BloodGroup::all();
 });
 
 on(['close-modal-reset' => function ($wireModels) {
-    $this->reset('id');
+    $this->reset(['id','user_id']);
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
+    $this->position = 'familiar';
 }]);
 
-$familyCards = computed(function () {
-    return FamilyCard::where('family_card_number', 'like', '%' . $this->search . '%')
-        ->orWhere('head_of_family', 'like', '%' . $this->search . '%')
-        ->paginate($this->show, pageName: 'family-card-page');
+$familyMembers = computed(function () {
+    return FamilyMember::where('resident_identification_number', 'like', '%' . $this->search . '%')
+        ->orWhere('name', 'like', '%' . $this->search . '%')
+        ->paginate($this->show, pageName: 'family-member-page');
 });
 
 $save = function () {
-    $this->validate([
-        'family_card_number' => ['required', 'string', 'min:16', 'max:16', 'unique:family_cards,family_card_number' . ($this->id ? ',' . $this->id : '')],
-        'head_of_family' => ['required', 'string'],
-        'province_id' => ['required'],
-        'regency_id' => ['required'],
-        'district_id' => ['required'],
-        'sub_district_id' => ['required'],
-        'citizen_association_id' => ['required'],
-        'neighborhood_association_id' => ['required'],
-        'address' => ['required', 'string'],
-        'postal_code' => ['required', 'numeric'],
+    $validate = $this->validate([
+        'resident_identification_number' => ['required', 'string', 'min:16', 'max:16', 'unique:family_members,resident_identification_number' . ($this->id ? ',' . $this->id : '')],
+        'position' => ['required', 'string'],
+        'name' => ['required', 'string'],
+        'gender' => ['required', 'string'],
+        'birth_place' => ['required', 'string'],
+        'birth_date' => ['required', 'date'],
+        'religion_id' => ['required'],
+        'education_id' => ['required'],
+        'employment_id' => ['required'],
+        'blood_group_id' => ['required']
     ]);
+    $validate['family_card_id'] = $this->family_card_id;
     try {
-        FamilyCard::updateOrCreate([
-            'id' => $this->id
-        ],[
-            'family_card_number' => $this->family_card_number,
-            'head_of_family' => $this->head_of_family,
-            'province_id' => $this->province_id,
-            'regency_id' => $this->regency_id,
-            'district_id' => $this->district_id,
-            'sub_district_id' => $this->sub_district_id,
-            'citizen_association_id' => $this->citizen_association_id,
-            'neighborhood_association_id' => $this->neighborhood_association_id,
-            'address' => $this->address,
-            'postal_code' => $this->postal_code,
-        ]);
-        unset($this->familyCards);
-        $this->dispatch('close-modal', id: 'family-card-modal');
+        FamilyMember::updateOrCreate(['id' => $this->id],$validate);
+        unset($this->familyMembers);
+        $this->dispatch('close-modal', id: 'family-member-modal');
         Toaster::success('Data berhasil disimpan!');
     } catch (Exception $e) {
-        $this->dispatch('close-modal', id: 'family-card-modal');
+        $this->dispatch('close-modal', id: 'family-member-modal');
         Toaster::error($e->getMessage());
+//        dd($e->getMessage());
     }
 };
 
 $edit = function ($id) {
-    $familyCard = FamilyCard::find($id);
-    $this->id = $familyCard->id;
-    $this->family_card_number = $familyCard->family_card_number;
-    $this->head_of_family = $familyCard->head_of_family;
-    $this->province_id = $familyCard->province_id;
-    $this->province_id ? $this->cities = Regency::where('province_id', $this->province_id)->get() : $this->cities = [];
-    $this->regency_id = $familyCard->regency_id;
-    $this->regency_id ? $this->districts = District::where('regency_id', $this->regency_id)->get() : $this->districts = [];
-    $this->district_id = $familyCard->district_id;
-    $this->district_id ? $this->sub_districts = SubDistrict::where('district_id', $this->district_id)->get() : $this->sub_districts = [];
-    $this->sub_district_id = $familyCard->sub_district_id;
-    $this->citizen_association_id = $familyCard->citizen_association_id;
-    $this->citizen_association_id ? $this->neighborhood_associations = NeighborhoodAssociation::where('citizen_association_id', $this->citizen_association_id)->get() : $this->neighborhood_associations = [];
-    $this->neighborhood_association_id = $familyCard->neighborhood_association_id;
-    $this->address = $familyCard->address;
-    $this->postal_code = $familyCard->postal_code;
-
-    $this->dispatch('open-modal', id: 'family-card-modal');
+    $familyMember = FamilyMember::find($id);
+    $this->id = $familyMember->id;
+    $this->resident_identification_number = $familyMember->resident_identification_number;
+    $this->position = $familyMember->position;
+    $this->name = $familyMember->name;
+    $this->gender = $familyMember->gender;
+    $this->birth_place = $familyMember->birth_place;
+    $this->birth_date = $familyMember->birth_date;
+    $this->religion_id = $familyMember->religion_id;
+    $this->education_id = $familyMember->education_id;
+    $this->employment_id = $familyMember->employment_id;
+    $this->blood_group_id = $familyMember->blood_group_id;
+    $this->dispatch('open-modal', id: 'family-member-modal');
 };
 
 $destroy = function ($id) {
     try {
-        $familyCard = FamilyCard::find($id);
-        $familyCard->delete();
-        unset($this->familyCards);
+        $familyMember = FamilyMember::find($id);
+        $familyMember->delete();
+        unset($this->familyMembers);
         Toaster::success('Data berhasil dihapus!');
     } catch (Exception $e) {
         Toaster::error($e->getMessage());
     }
-}
+};
+
+$updateAccount = function () {
+    $this->validate([
+        'email' => ['required', 'email', 'unique:users,email'],
+        'password' => ['required', 'confirmed'],
+    ]);
+    try {
+        $user = User::updateOrCreate([
+            'id' => $this->user_id,
+        ], [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+            'email_verified_at' => now(),
+            'remember_token' => \Illuminate\Support\Str::random(10),
+        ])->assignRole('warga');
+        $familyMember = FamilyMember::find($this->id);
+        $familyMember->update([
+            'user_id' => $user->id,
+        ]);
+        $this->dispatch('close-modal', id: 'family-member-account-modal');
+        Toaster::success('Data berhasil disimpan!');
+    } catch (Exception $e) {
+        $this->dispatch('close-modal', id: 'family-member-account-modal');
+        Toaster::error($e->getMessage());
+//        dd($e->getMessage());
+    }
+};
+
+$resetAccount = function ($id) {
+    $familyMember = FamilyMember::find($id);
+    $this->id = $familyMember->id;
+    if ($familyMember->user_id) {
+        $this->user_id = $familyMember->user_id;
+        $this->email = $familyMember->user->email;
+    }
+    $this->dispatch('open-modal', id: 'family-member-account-modal');
+};
 
 ?>
 
@@ -129,56 +183,65 @@ $destroy = function ($id) {
             </x-ui.input-icon>
         </x-slot>
     </x-ui.breadcrumbs>
-    <x-ui.modal id="family-card-modal" size="lg">
+    <x-ui.modal id="family-member-modal" size="lg">
         <x-slot name="header">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Kartu Keluarga (KK)</h5>
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Anggota Keluarga {{ $this->head_of_family }}</h5>
         </x-slot>
         <x-slot name="content">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mx-auto">
-                <x-ui.input type="text" label="Nomor Kartu Keluarga" wire:model="family_card_number" id="family_card_number"/>
-                <x-ui.input type="text" label="Kepala Keluarga" wire:model="head_of_family" id="head_of_family"/>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mb-2">
-                <x-ui.input-select label="Provinsi" id="province_id" name="province_id"
-                                     server :data="$this->provinces" required
-                                     wire:model.live="province_id"/>
-                <x-ui.input-select :selected="$this->regency_id" label="Kota" id="regency_id" name="regency_id" server
-                                     required wire:model.live="regency_id"
-                                     :data="$this->cities"/>
-                <x-ui.input-select :selected="$this->district_id" label="Kecamatan" id="district_id" name="district_id" required
-                                     wire:model.live="district_id" server
-                                     :data="$this->districts"/>
-                <x-ui.input-select :selected="$this->sub_district_id" label="Kelurahan" id="sub_district_id" name="sub_district_id"
-                                     required wire:model.live="sub_district_id"
-                                     server :data="$this->sub_districts"/>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mb-2">
-                <x-ui.input-select :selected="$this->citizen_association_id" label="RW" id="citizen_association_id" name="citizen_association_id"
-                                   required wire:model.live="citizen_association_id"
-                                   server :data="$this->citizen_associations" display_name="position"/>
-                <x-ui.input-select :selected="$this->neighborhood_association_id" label="RT" id="neighborhood_association_id" name="neighborhood_association_id"
-                                   required wire:model.live="neighborhood_association_id"
-                                   server :data="$this->neighborhood_associations" display_name="position"/>
-                <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
-                <x-ui.input type="number" label="Kode Pos" wire:model="postal_code" id="postal_code"/>
+                <x-ui.input type="text" label="Nama Lengkap" wire:model="name" id="name" />
+                <x-ui.input type="text" label="Nomor Induk Kependudukan" wire:model="resident_identification_number" id="resident_identification_number" />
+                <x-ui.input-select id="gender" name="gender" wire:model="gender" class="w-full" label="Jenis Kelamin">
+                    <option value="">Pilih?</option>
+                    <option value="M">Laki-Laki</option>
+                    <option value="F">Perempuan</option>
+                </x-ui.input-select>
+                <x-ui.input-select id="position" name="position" wire:model="position" class="w-full" label="Status">
+                    <option value="familiar">Anggota Keluarga</option>
+                    <option value="patriarch">Kepala Keluarga</option>
+                </x-ui.input-select>
+                <x-ui.input type="text" label="Tempat Lahir" wire:model="birth_place" id="birth_place" />
+                <x-ui.input type="date" label="Tanggal Lahir" wire:model="birth_date" id="birth_date" />
+                <x-ui.input-select id="religion_id" name="religion_id" wire:model="religion_id" class="w-full" label="Agama" server :data="$this->religions" />
+                <x-ui.input-select id="education_id" name="education_id" wire:model="education_id" class="w-full" label="Pendidikan" server :data="$this->educations" />
+                <x-ui.input-select id="employment_id" name="employment_id" wire:model="employment_id" class="w-full" label="Pekerjaan" server :data="$this->employments" />
+                <x-ui.input-select id="blood_group_id" name="blood_group_id" wire:model="blood_group_id" class="w-full" label="Golongan Darah" server :data="$this->blood_groups" />
+
             </div>
 
         </x-slot>
         <x-slot name="footer">
-            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'family-card-modal' })">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'family-member-modal' })">
                 Batal
             </x-ui.button>
-            <x-ui.button size="sm" title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" />
+            <x-ui.button size="sm" title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="save" loading-only />
         </x-slot>
     </x-ui.modal>
-
+    <x-ui.modal id="family-member-account-modal">
+        <x-slot name="header">
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Buat/Reset Akun</h5>
+        </x-slot>
+        <x-slot name="content">
+            <x-ui.input type="email" label="Email" wire:model="email" id="email"/>
+            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2 my-2">
+                <x-ui.input type="password" label="Password" wire:model="password" id="password"/>
+                <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation"/>
+            </div>
+        </x-slot>
+        <x-slot name="footer">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'family-member-account-modal' })">
+                Batal
+            </x-ui.button>
+            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="save" wire:click="updateAccount" />
+        </x-slot>
+    </x-ui.modal>
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
         <div class="col-span-3 ">
             <x-ui.card class="mt-2 w-full ">
                 <x-slot name="header">
                     <div>
-                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Kartu Keluarga (KK)</h5>
-                        <p class="text-sm text-gray-600 dark:text-gray-300">Daftar kartu keluarga yang terdaftar di {{ Auth::user()->neighborhoodAssociation->position ?? '' }}</p>
+                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Anggota Keluarga</h5>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Daftar anggota keluarga {{ $this->head_of_family }}</p>
                     </div>
                 </x-slot>
                 <x-slot name="sideHeader">
@@ -191,56 +254,92 @@ $destroy = function ($id) {
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </x-ui.input-select>
-                        <x-ui.button wire:click="$dispatch('open-modal', { id :'family-card-modal'})" size="xs" color="blue">
+                        <x-ui.button wire:click="$dispatch('open-modal', { id :'family-member-modal'})" size="xs" color="blue">
                             <span class="iconify duo-icons--add-circle w-4 h-4 me-1"></span>
-                            Tambah
+                            Tambah Anggota
                         </x-ui.button>
                     </div>
                 </x-slot>
-                <x-ui.table thead="#, Nomor KK, Kepala Keluarga, Alamat, RT/RW, Desa/Kelurahan, Kecamatan, Kabupaten/Kota, Provinsi, Kode Pos" :action="true">
-                    @if($this->familyCards->count() > 0)
-                        @foreach($this->familyCards as $key => $familyCard)
+
+                <div class="border dark:border-gray-600 rounded-lg p-3 border-gray-200 mx-auto">
+                    <h3 class="text-center font-bold text-lg">No. {{ $this->family_card_number }}</h3>
+                </div>
+                <div class="border dark:border-gray-600 rounded-lg p-3 border-gray-200 mx-auto">
+                    <table class="w-full">
+                        <tr>
+                            <td class="font-bold">Nama Kepala Keluarga</td>
+                            <td>: {{ $this->head_of_family }}</td>
+                            <td class="font-bold">Desa/Kelurahan</td>
+                            <td>: {{ $this->sub_district }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">Alamat</td>
+                            <td>: {{ $this->address }}</td>
+                            <td class="font-bold">Kecamatan</td>
+                            <td>: {{ $this->district }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">RT/RW</td>
+                            <td>: {{ $this->citizen_association }}/{{ $this->neighborhood_association }}</td>
+                            <td class="font-bold">Kabupaten/Kota</td>
+                            <td>: {{ $this->regency }}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">Kode Pos</td>
+                            <td>: {{ $this->postal_code }}</td>
+                            <td class="font-bold">Provinsi</td>
+                            <td>: {{ $this->province }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <x-ui.table thead="#, Status, Nama, Nomor Induk Kependudukan, Jenis Kelamin, Tempat Lahir, Tanggal Lahir, Agama, Pendidikan, Jenis Pekerjaan, Golongan Darah" :action="true">
+
+                    @if($this->familyMembers->count() > 0)
+                        @foreach($this->familyMembers as $key => $familyMember)
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 <td class="px-6 py-4">
                                     {{ $loop->iteration }}
                                 </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->family_card_number }}
+                                <td class="px-6 py-4 text-nowrap">
+                                    {{ $familyMember->position == 'patriarch' ? 'Kepala Keluarga' : 'Anggota Keluarga' }}
+                                </td>
+                                <td class="px-6 py-4 text-nowrap">
+                                    {{ $familyMember->name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ $familyCard->head_of_family }}
+                                    {{ $familyMember->resident_identification_number }}
                                 </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->address }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->citizen->position }}/{{ $familyCard->neighborhood->position }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->sub_district->name }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->district->name }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->regency->name }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->province->name }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $familyCard->postal_code }}
+                                <td class="px-6 py-4 text-nowrap">
+                                    {{ $familyMember->gender == 'M' ? 'Laki-Laki' : 'Perempuan' }}
                                 </td>
                                 <td class="px-6 py-4 ">
-                                    <x-ui.button class="w-24 mb-1" tag="link" size="xs" color="yellow" href="#">
+                                    {{ $familyMember->birth_place }}
+                                </td>
+                                <td class="px-6 py-4 text-nowrap">
+                                    {{ $familyMember->birth_date }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $familyMember->religion->name }}
+                                </td>
+                                <td class="px-6 py-4 text-nowrap">
+                                    {{ $familyMember->education->name }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $familyMember->employment->name }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $familyMember->blood_group->name }}
+                                </td>
+                                <td class="px-6 py-4 ">
+                                    <x-ui.button class="w-24 mb-1" size="xs" color="yellow" wire:click="resetAccount({{ $familyMember->id }})" >
                                         <span class="iconify carbon--user w-3 h-3 me-1"></span>
-                                        Anggota
+                                        Buat Akun
                                     </x-ui.button>
-                                    <x-ui.button class="w-24 mb-1" size="xs" color="blue" wire:click="edit({{ $familyCard->id }})" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="edit({{ $familyCard->id }})">
+                                    <x-ui.button class="w-24 mb-1" size="xs" color="blue" wire:click="edit({{ $familyMember->id }})" wire:loading.attr="disabled" wire:loading.class="cursor-not-allowed" wire:target="edit({{ $familyMember->id }})">
                                         <span class="iconify carbon--edit w-3 h-3 me-1"></span>
                                         Ubah
                                     </x-ui.button>
-                                    <x-ui.button class="w-24 mb-1" size="xs" color="red" wire:click="destroy({{ $familyCard->id }})"
+                                    <x-ui.button class="w-24 mb-1" size="xs" color="red" wire:click="destroy({{ $familyMember->id }})"
                                                  wire:confirm="Anda yakin ingin menghapus data ini?">
                                         <span class="iconify carbon--delete w-3 h-3 me-1"></span>
                                         Hapus
@@ -257,7 +356,7 @@ $destroy = function ($id) {
                     @endif
                 </x-ui.table>
 
-                {{ $this->familyCards->links('livewire.pagination') }}
+                {{ $this->familyMembers->links('livewire.pagination') }}
             </x-ui.card>
         </div>
     </div>

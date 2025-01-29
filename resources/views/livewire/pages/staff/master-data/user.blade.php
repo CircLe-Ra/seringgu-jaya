@@ -87,8 +87,8 @@ $destroy = function ($id) {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-        ['text' => __('Dashboard'), 'href' => '/dashboard'],
-        ['text' => __('Users'), 'href' => route('master-data.user')]
+        ['text' => 'Dashboard', 'href' => route('dashboard')],
+        ['text' => __('User'), 'href' => route('master-data.user')]
     ]">
         <x-slot name="actions">
             <x-ui.input-icon id="search" wire:model.live="search" placeholder="Cari..." size="small">
@@ -115,7 +115,7 @@ $destroy = function ($id) {
                 <x-slot name="header">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ __('Tambah User') }}</h5>
                 </x-slot>
-                <form wire:submit="store" class="max-w-sm mx-auto">
+                <form wire:submit="store" class="mx-auto">
                     <input type="hidden" wire:model="idData">
                     <x-ui.input id="name" name="name" wire:model="name" main-class="mb-2" label="Nama" placeholder="Masukkan Nama" />
                     <x-ui.input type="email" id="email" name="email" wire:model="email" main-class="mb-2" label="Email" placeholder="Masukkan Email" />

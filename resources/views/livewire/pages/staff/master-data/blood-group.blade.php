@@ -89,14 +89,16 @@ $edit = function ($id){
                 <x-slot name="header">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">Tambah Golongan Darah</h5>
                 </x-slot>
-                <form wire:submit="store" class="max-w-sm mx-auto">
+                <form wire:submit="store" class="mx-auto">
                     <x-ui.input-select id="name" name="name" wire:model="name" main-class="mb-5" label="Golongan Darah">
                         <option value="">Masukan Nama</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
                         <option value="AB">AB</option>
                         <option value="O">O</option>
+                        <option value="N/A">TIDAK TAHU</option>
                     </x-ui.input-select>
+
                     <div class="flex justify-end space-x-2">
                         <x-ui.button type="reset" color="light">
                             Batal

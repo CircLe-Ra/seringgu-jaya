@@ -88,7 +88,7 @@ $edit = function ($id){
                 <x-slot name="header">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">Tambah Pendidikan</h5>
                 </x-slot>
-                <form wire:submit="store" class="max-w-sm mx-auto">
+                <form wire:submit="store" class="mx-auto">
                     <x-ui.input id="name" name="name" wire:model="name" label="Nama Pendidikan"
                                   placeholder="Masukan Nama" main-class="mb-5"/>
                     <div class="flex justify-end space-x-2">

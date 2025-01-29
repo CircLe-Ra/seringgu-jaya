@@ -248,10 +248,10 @@ $destroy = function ($id) {
                                 <td class="px-6 py-4">
                                     {{ $familyCard->head_of_family }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $familyCard->address }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $familyCard->citizen->position }}/{{ $familyCard->neighborhood->position }}
                                 </td>
                                 <td class="px-6 py-4">
@@ -263,14 +263,14 @@ $destroy = function ($id) {
                                 <td class="px-6 py-4">
                                     {{ $familyCard->regency->name }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $familyCard->province->name }}
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ $familyCard->postal_code }}
                                 </td>
                                 <td class="px-6 py-4 ">
-                                    <x-ui.button class="w-24 mb-1" tag="link" size="xs" color="yellow" href="{{ route('neighborhood-association.inhabitant-detail', ['id' => $familyCard->id]) }}">
+                                    <x-ui.button wire:navigate class="w-24 mb-1" tag="link" size="xs" color="yellow" href="{{ route('neighborhood-association.inhabitant-detail', ['id' => $familyCard->id]) }}">
                                         <span class="iconify carbon--user w-3 h-3 me-1"></span>
                                         Anggota
                                     </x-ui.button>

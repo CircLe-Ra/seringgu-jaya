@@ -15,7 +15,7 @@
         </svg>
     @endif
     <span class="sr-only">Info</span>
-    <div>
-        {{ $slot ?? $value }}
+    <div class="text-gray-800 dark:text-gray-300">
+        {{ $value ?? $slot }}
     </div>
 </div>

@@ -1,8 +1,10 @@
 @props(['label', 'alert' => true])
-<div>
+<div >
+    @isset($label)
     <x-ui.input-label :value="$label ?? 'label'" />
+    @endisset
     <div wire:ignore class="shadow-xl border-t border-l border-r rounded-lg dark:border-gray-700 dark:bg-gray-800">
-        <div x-data x-init="() => {
+        <div x-data x-cloak x-init="() => {
                 const pond = FilePond.create($refs.inputFilepond);
                 pond.setOptions({
                     allowMultiple: {{ $attributes->has('multiple') ? 'true' : 'false' }},
@@ -29,10 +31,10 @@
                     }
                 });
                 this.addEventListener('pond-edit', (event) => {
-                    if(event.detail[0].file) {
+                    if(event.detail.file) {
                         pond.setOptions({
                             files: [{
-                                source: '{{ public_path('storage') }}/' + event.detail[0].file,
+                                source: '{{ asset('storage') }}/' + event.detail.file,
                                 options: {
                                     type: 'local',
                                 },
@@ -57,12 +59,14 @@
         <script src="{{ asset('3party/filepond/filepond-plugin-file-validate-size.js') }}"></script>
         <script src="{{ asset('3party/filepond/filepond-plugin-image-preview.js') }}"></script>
         <script src="{{ asset('3party/filepond/filepond.js') }}"></script>
-        <script>
+        @script
+            <script>
             window.addEventListener('livewire:navigated', () => {
                 FilePond.registerPlugin(FilePondPluginFileValidateType);
                 FilePond.registerPlugin(FilePondPluginFileValidateSize);
                 FilePond.registerPlugin(FilePondPluginImagePreview);
-            });
-        </script>
+            }, { once: true });
+            </script>
+        @endscript
     @endpushonce
 </div>

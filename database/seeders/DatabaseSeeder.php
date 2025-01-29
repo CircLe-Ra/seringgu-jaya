@@ -32,7 +32,9 @@ class DatabaseSeeder extends Seeder
             ReligionSeeder::class,
             BloodGroupSeeder::class,
             EmploymentSeeder::class,
-            EducationSeeder::class
+            EducationSeeder::class,
+            NewsCategorySeeder::class,
+            LetterTypeSeeder::class
         ]);
 
 
