@@ -12,8 +12,18 @@ window.Echo = new Echo({
     forceTLS: true
 });
 
+const playNotificationSound = () => {
+    const audio = new Audio('/audio/notif.wav');
+    audio.play().catch(error => {
+        console.log("Playback failed. Waiting for user interaction.");
+        document.addEventListener("click", () => audio.play(), { once: true });
+    });
+};
+
+
 window.Echo.private('notification-for-staff')
     .listen('LetterApply', (e) => {
+        console.log(e);
         new window.Notify ({
             status: 'info',
             title: 'Notifikasi Baru',
@@ -35,6 +45,6 @@ window.Echo.private('notification-for-staff')
             position: 'right top',
             customWrapper: '',
         });
-        new Audio('/audio/notif.wav').play();
+        playNotificationSound();
     });
 

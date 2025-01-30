@@ -167,7 +167,7 @@ $destroy = function ($id) {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Tetangga (RT)</h5>
         </x-slot>
         <x-slot name="content">
-            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
+            <div class="grid-cols-2 sm:grid-cols-2 grid gap-2 mt-3">
                 <x-ui.input-select label="Rukun Warga (RW)" wire:model="ca" id="ca" display_name="position" server :data="$this->citizen_associations"/>
                 <x-ui.input type="text" name="position" label="Jabatan (Ketua)" wire:model="position" id="position"/>
             </div>

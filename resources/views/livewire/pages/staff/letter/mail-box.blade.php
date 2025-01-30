@@ -30,7 +30,7 @@ on(['close-modal-reset' => function ($wireModels) {
 }]);
 
 $letters = computed(function () {
-    return Letter::whereHas('letter_type', function ($query){
+    return Letter::where('submission_status', 1)->whereHas('letter_type', function ($query){
         $query->where('name', 'like', '%' . $this->search . '%');
     })->latest()->paginate($this->show, pageName: 'staff-letters-page');
 });
@@ -135,7 +135,7 @@ $reply = function ($id) {
                     </div>
                 </x-slot>
                 <x-slot name="sideHeader">
-                    <div class="flex gap-2 lg:justify-end items-center justify-center">
+                    <div class="flex gap-2 justify-end items-center">
                         <x-ui.input-select id="show" name="show" wire:model.live="show" size="xs" class="w-full">
                             <option value="">Semua</option>
                             <option value="5">5</option>
@@ -146,7 +146,7 @@ $reply = function ($id) {
                         </x-ui.input-select>
                     </div>
                 </x-slot>
-                <x-ui.table thead="#, Jenis Surat, Surat, Kartu Keluarga, Kartu Tanda Penduduk, Surat Balasan" :action="true">
+                <x-ui.table thead="#, Jenis Surat, Surat, Kartu Keluarga, Kartu Tanda Penduduk, Surat Balasan" :action="true" wire:poll.keep-alive>
                     @if($this->letters->count() > 0)
                         @foreach($this->letters as $key => $letter)
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">

@@ -59,7 +59,6 @@ $store = function () {
                     $letter_file = $this->letter_file->store('letters');
                     $validate['letter_file'] = $letter_file;
                 } else {
-                    // Jika tidak ada file baru, pertahankan file lama
                     $validate['letter_file'] = $data->letter_file;
                 }
 
@@ -127,11 +126,11 @@ $apply = function ($id) {
     try {
         $users = User::role('staff')->get();
         $letter = Letter::find($id);
+        Notification::send($users, new NotificationLetter($letter->letter_type->name, auth()->user()->neighborhoodAssociation->position, auth()->user()->neighborhoodAssociation->name, auth()->user()->profile_path));
+        event(new LetterApply($letter->letter_type->name, auth()->user()->neighborhoodAssociation->position, auth()->user()->neighborhoodAssociation->name, auth()->user()->profile_path));
         $letter->submission_status = 1;
         $letter->status = 'apply';
         $letter->save();
-        Notification::send($users, new NotificationLetter($letter->letter_type->name, auth()->user()->neighborhoodAssociation->position, auth()->user()->neighborhoodAssociation->name, auth()->user()->profile_path));
-        event(new LetterApply($letter->letter_type->name, auth()->user()->neighborhoodAssociation->position, auth()->user()->neighborhoodAssociation->name, auth()->user()->profile_path));
         Toaster::success('Surat berhasil diajukan');
     } catch (Exception $e) {
         Toaster::error('Surat gagal diajukan');

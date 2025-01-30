@@ -1,7 +1,7 @@
 import './bootstrap';
 import '../../vendor/masmerise/livewire-toaster/resources/js';
 import 'flowbite';
-import {initFlowbite} from "flowbite";
+import { initFlowbite } from "flowbite";
 
 document.addEventListener('livewire:navigated', () => {
     initFlowbite();

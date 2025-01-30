@@ -10,9 +10,6 @@ usesPagination();
 state(['show' => 5, 'search' => ''])->url();
 state(['position', 'name', 'address', 'phone', 'id']);
 
-//mount(function () {
-
-//});
 
 $CAs = computed(function () {
     return CitizenAssociation::where('name', 'like', '%' . $this->search . '%')
@@ -109,7 +106,7 @@ $destroy = function ($id) {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Rukun Warga (RW)</h5>
         </x-slot>
         <x-slot name="content">
-            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2">
+            <div class="grid-cols-1 sm:grid-cols-2 grid gap-2 mt-3">
                 <x-ui.input type="text" label="Jabatan (Ketua)" wire:model="position" id="position" name="position"/>
                 <x-ui.input type="text" label="Nama" wire:model="name" id="name"/>
             </div>

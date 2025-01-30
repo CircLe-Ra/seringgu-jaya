@@ -19,6 +19,9 @@ state(['id','family_card_number','head_of_family','province_id','regency_id','di
 state(['cities' => [], 'districts' => [], 'sub_districts' => [], 'neighborhood_associations' => []]);
 
 mount(function () {
+    if(auth()->user()->roles()->get()->first()->name != 'rt'){
+        abort(404);
+    }
 });
 
 $provinces = computed(function () {
@@ -59,9 +62,8 @@ on(['close-modal-reset' => function ($wireModels) {
 
 }]);
 
-
 $familyCards = computed(function () {
-    return FamilyCard::where('family_card_number', 'like', '%' . $this->search . '%')
+    return FamilyCard::where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id)->where('family_card_number', 'like', '%' . $this->search . '%')
         ->orWhere('head_of_family', 'like', '%' . $this->search . '%')
         ->paginate($this->show, pageName: 'family-card-page');
 });

@@ -297,6 +297,10 @@ return [
         'blood_group'              => 'Golongan darah',
         'marital_status'           => 'Status perkawinan',
         'citizenship'              => 'Kewarganegaraan',
-        'education'                => 'Pendidikan terakhir'
+        'education'                => 'Pendidikan terakhir',
+        'resident_identification_card_file' => 'Kartu identitas penduduk',
+        'family_card_file'         => 'Kartu keluarga',
+        'letter_file'              => 'Surat',
+        'letter_type_id'           => 'Jenis surat',
     ],
 ];

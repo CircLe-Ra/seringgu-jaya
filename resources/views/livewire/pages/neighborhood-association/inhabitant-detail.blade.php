@@ -22,6 +22,9 @@ state(['resident_identification_number', 'name', 'gender', 'birth_place', 'birth
 state(['position'=> 'familiar']);
 
 mount(function () {
+    if(auth()->user()->roles()->get()->first()->name != 'rt'){
+        abort(404);
+    }
     $family_card = FamilyCard::find($this->family_card_id);
     $this->family_card_number = $family_card->family_card_number;
     $this->head_of_family = $family_card->head_of_family;
@@ -262,10 +265,10 @@ $resetAccount = function ($id) {
                 </x-slot>
 
                 <div class="border dark:border-gray-600 rounded-lg p-3 border-gray-200 mx-auto">
-                    <h3 class="text-center font-bold text-lg">No. {{ $this->family_card_number }}</h3>
+                    <h3 class="text-center font-bold text-lg dark:text-blue-100 text-gray-900">No. {{ $this->family_card_number }}</h3>
                 </div>
                 <div class="border dark:border-gray-600 rounded-lg p-3 border-gray-200 mx-auto">
-                    <table class="w-full">
+                    <table class="w-full dark:text-gray-100 text-gray-900" >
                         <tr>
                             <td class="font-bold">Nama Kepala Keluarga</td>
                             <td>: {{ $this->head_of_family }}</td>

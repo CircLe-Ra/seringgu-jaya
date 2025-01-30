@@ -35,7 +35,7 @@ mount(function () {
         <div class="divide-y divide-gray-100 dark:divide-gray-800">
             @if($this->user->unreadNotifications->count())
                 @foreach($this->user->unreadNotifications as $notification)
-                    <a href="#" class="flex px-4 py-3 hover:bg-gray-200 bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
+                    <a href="{{ route('letter.mail-box') }}" class="flex px-4 py-3 hover:bg-gray-200 bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
                         <div class="shrink-0">
                             <img class="rounded-full w-11 h-11" src="{{ $notification->data['profile_photo'] ? asset($notification->data['profile_photo']) : 'https://ui-avatars.com/api/?name=' . $notification->data['name'] }}" alt="Foto Proile">
                             <div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">
