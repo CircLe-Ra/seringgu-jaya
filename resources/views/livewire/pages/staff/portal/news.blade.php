@@ -55,14 +55,14 @@ $destroy = function ($id) {
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
         <div class="col-span-3 ">
             <x-ui.card class="mt-2 w-full ">
-                <x-slot name="header" class="grid grid-cols-1 xl:grid-cols-3 gap-2">
+                <x-slot name="header" class="grid grid-cols-1 xl:grid-cols-2 gap-2">
                     <div>
                         <h5 class="text-xl font-medium text-gray-900 dark:text-white">Informasi/Berita</h5>
                         <p class="text-sm text-gray-600 dark:text-gray-300">Daftar Informasi/Berita Kelurahan.</p>
                     </div>
                 </x-slot>
                 <x-slot name="sideHeader">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 col-span-4">
+                    <div class="flex gap-2 lg:justify-end items-center justify-center">
                         <x-ui.input-select id="show" name="show" wire:model.live="show" size="xs" class="w-full">
                             <option value="">Semua</option>
                             <option value="5">5</option>

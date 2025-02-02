@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NotificationLetter extends Notification
+class NotificationLetterApply extends Notification
 {
     use Queueable;
 
@@ -16,16 +16,18 @@ class NotificationLetter extends Notification
     public $position;
     public $name;
     public $profile_photo;
+    public $message;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($letter, $position, $name, $profile_photo)
+    public function __construct($letter, $position, $name, $profile_photo, $message)
     {
         $this->letter = $letter;
         $this->position = $position;
         $this->name = $name;
         $this->profile_photo = $profile_photo;
+        $this->message = $message;
     }
 
     /**
@@ -49,7 +51,8 @@ class NotificationLetter extends Notification
             'letter' => $this->letter,
             'position' => $this->position,
             'name' => $this->name,
-            'profile_photo' => $this->profile_photo
+            'profile_photo' => $this->profile_photo,
+            'message' => $this->message
         ];
     }
 
@@ -59,7 +62,8 @@ class NotificationLetter extends Notification
             'letter' => $this->letter,
             'position' => $this->position,
             'name' => $this->name,
-            'profile_photo' => $this->profile_photo
+            'profile_photo' => $this->profile_photo,
+            'message' => $this->message
         ]);
     }
 }

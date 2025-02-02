@@ -9,7 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LetterApply implements ShouldBroadcastNow
+class LetterApplyEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -17,15 +17,17 @@ class LetterApply implements ShouldBroadcastNow
     public $position;
     public $name;
     public $profile_photo;
+    public $message;
     /**
      * Create a new event instance.
      */
-    public function __construct($letter, $position, $name, $profile_photo)
+    public function __construct($letter, $position, $name, $profile_photo, $message)
     {
         $this->letter = $letter;
         $this->position = $position;
         $this->name = $name;
         $this->profile_photo = $profile_photo;
+        $this->message = $message;
     }
 
     /**
@@ -46,7 +48,8 @@ class LetterApply implements ShouldBroadcastNow
             'letter' => $this->letter,
             'position' => $this->position,
             'name' => $this->name,
-            'profile_photo' => $this->profile_photo
+            'profile_photo' => $this->profile_photo,
+            'message' => $this->message
         ];
     }
 }

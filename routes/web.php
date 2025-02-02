@@ -30,6 +30,12 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('neighborhood-association/inhabitant-detail/{id}', 'pages.neighborhood-association.inhabitant-detail')->name('neighborhood-association.inhabitant-detail');
     Volt::route('neighborhood-association/letter', 'pages.neighborhood-association.letter')->name('neighborhood-association.letter');
     Volt::route('neighborhood-association/trash-letter', 'pages.neighborhood-association.trash-letter')->name('neighborhood-association.trash-letter');
+
+    //citizen
+    Volt::route('citizen/information', 'pages.citizen.information')->name('citizen.information');
+    Volt::route('citizen/mail-box', 'pages.citizen.mail-box')->name('citizen.mail-box');
+
+    Volt::route('notification', 'pages.notification')->name('notification');
 });
 
 require __DIR__.'/auth.php';

@@ -15,7 +15,7 @@
             }
         </script>
     </head>
-    <body>
+    <body class="">
         <header>
             <livewire:layout.portal-navigation />
         </header>
@@ -77,6 +77,7 @@
                 </div>
             </div>
         </footer>
+
         <script>
             document.addEventListener('livewire:navigated', function () {
                 let themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');

@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(FamilyMember::class);
     }
+
+    public function news()
+    {
+        return $this->hasMany(News::class);
+    }
 }

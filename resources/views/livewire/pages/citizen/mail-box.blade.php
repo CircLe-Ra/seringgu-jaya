@@ -7,8 +7,8 @@ use Masmerise\Toaster\Toaster;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Facades\Notification;
-use App\Events\LetterProcessEvent;
-use App\Notifications\NotificationLetterProcess;
+use App\Notifications\NotificationLetterApply;
+use App\Events\LetterApplyEvent;
 
 layout('layouts.app');
 title('Surat Masuk');
@@ -18,17 +18,10 @@ state(['id', 'response_letter_file']);
 state(['edit' => false]);
 
 mount(function () {
-    if (auth()->user()->roles()->get()->first()->name != 'staff') {
+    if (auth()->user()->roles()->get()->first()->name != 'warga') {
         abort(404);
     }
 });
-
-on(['close-modal-reset' => function ($wireModels) {
-    $this->reset(['id']);
-    $this->reset($wireModels);
-    $this->resetErrorBag($wireModels);
-    $this->edit = false;
-}]);
 
 $letters = computed(function () {
     return Letter::where('submission_status', 1)->whereHas('letter_type', function ($query) {
@@ -36,54 +29,8 @@ $letters = computed(function () {
     })->latest()->paginate($this->show, pageName: 'staff-letters-page');
 });
 
-$store = function () {
-    $validate = $this->validate([
-        'response_letter_file' => ($this->id ? 'nullable' : 'required') . '|file|mimes:pdf,doc,docx|max:2048',
-    ]);
-    try {
-        $letter = Letter::find($this->id);
-        if ($letter) {
-            if ($this->response_letter_file) {
-                if ($letter->response_letter_file) {
-                    \Storage::delete($letter->response_letter_file);
-                }
-                $response_letter_file = $this->response_letter_file->store('letters');
-                $validate['response_letter_file'] = $response_letter_file;
-            } else {
-                $validate['response_letter_file'] = $letter->response_letter_file;
-            }
-        }
-        $letter->update($validate);
-        $users = User::whereHas('neighborhoodAssociation', function ($query) use ($neighborhood_association_id) {
-            $query->where('id', $neighborhood_association_id);
-        })->orWhereHas('family_member', function ($query) use ($family_member_id) {
-            $query->where('id', $family_member_id);
-        })->get();
-        foreach ($users as $user) {
-            event(new LetterProcessEvent($user->id, $letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
-        }
-        Notification::send($users, new NotificationLetterProcess($letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
-        $this->dispatch('pond-reset');
-        $this->dispatch('close-modal', id: 'upload-letter-modal');
-        Toaster::success('Surat berhasil ditambahkan');
-    } catch (Exception $e) {
-        $this->dispatch('close-modal', id: 'upload-letter-modal');
-        Toaster::error('Surat gagal ditambahkan');
-        Toaster::error($e->getMessage());
-    }
-};
-
-$process = function ($id, $neighborhood_association_id, $family_member_id, $letter_type) {
-    $users = User::whereHas('neighborhoodAssociation', function ($query) use ($neighborhood_association_id) {
-        $query->where('id', $neighborhood_association_id);
-    })->orWhereHas('family_member', function ($query) use ($family_member_id) {
-        $query->where('id', $family_member_id);
-    })->get();
-    foreach ($users as $user) {
-        event(new LetterProcessEvent($user->id, $letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Surat diproses'));
-    }
-    Notification::send($users, new NotificationLetterProcess($letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Surat diproses'));
-    $letter = Letter::find($id)->update(['status' => 'process']);
+$process = function ($id) {
+    Letter::find($id)->update(['status' => 'process']);
     Toaster::success('Surat diproses');
 };
 
@@ -99,7 +46,7 @@ $reply = function ($id) {
 <div>
     <x-ui.breadcrumbs :crumbs="[
         ['href' => route('dashboard'), 'text' => 'Dashboard'],
-        ['text' => 'Surat Masuk'],
+        ['text' => 'Surat Pengajuan'],
     ]">
         <x-slot name="actions">
             <x-ui.input-icon id="search" wire:model.live="search" placeholder="Cari..." size="small">
@@ -118,41 +65,15 @@ $reply = function ($id) {
             </x-ui.input-icon>
         </x-slot>
     </x-ui.breadcrumbs>
-    <x-ui.modal id="upload-letter-modal">
-        <x-slot name="header">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Unggah Surat Balasan</h5>
-        </x-slot>
-        <x-slot name="content">
-            <div x-data="{ show : @entangle('edit') }" class="mt-3">
-                <x-ui.alert x-show="show"
-                            x-cloak
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 scale-90"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-300"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-90"
-                            color="warning"
-                            value="Sebelum mengunggah file, diharapkan untuk memeriksa kembali file yang akan diunggah guna meminimalkan kemungkinan kesalahan. Perlu diketahui, file yang sudah diunggah tidak dapat diubah."/>
-            </div>
-            <x-ui.filepond id="response_letter_file" wire:model="response_letter_file" label="Surat Balasan"/>
-        </x-slot>
-        <x-slot name="footer">
-            <x-ui.button size="sm" reset color="light" class="mr-2"
-                         wire:click="$dispatch('close-modal', { id: 'upload-letter-modal' })">
-                Batal
-            </x-ui.button>
-            <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
-                         wire:loading.class="cursor-not-allowed" wire:target="store" wire:click="store"/>
-        </x-slot>
-    </x-ui.modal>
+
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
         <div class="col-span-3 ">
             <x-ui.card class="mt-2 w-full ">
                 <x-slot name="header" class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div>
-                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Surat Masuk</h5>
-                        <p class="text-sm text-gray-600 dark:text-gray-300">Daftar surat pengajuan warga.</p>
+                        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Surat Pengajuan</h5>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Daftar surat pengajuan yang diajukan melalui
+                            Ketua {{ auth()->user()->family_member->family_card->neighborhood->position }}.</p>
                     </div>
                 </x-slot>
                 <x-slot name="sideHeader">
@@ -167,13 +88,17 @@ $reply = function ($id) {
                         </x-ui.input-select>
                     </div>
                 </x-slot>
-                <x-ui.table thead="#, Jenis Surat, Surat, Kartu Keluarga, Kartu Tanda Penduduk, Surat Balasan"
-                            :action="true" wire:poll.keep-alive>
+                <x-ui.table
+                    thead="#, Nama, Jenis Surat, Surat, Kartu Keluarga, Kartu Tanda Penduduk, Surat Balasan, Status"
+                    :action="false" wire:poll.keep-alive>
                     @if($this->letters->count() > 0)
                         @foreach($this->letters as $key => $letter)
                             <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                 <td class="px-6 py-4">
                                     {{ $loop->iteration }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $letter->family_member->name }}
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ $letter->letter_type->name }}
@@ -238,8 +163,8 @@ $reply = function ($id) {
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-nowrap">
-                                    @if($letter->status == 'apply')
-                                        <x-ui.button size="xs" color="blue" wire:click="process({{ $letter->id }}, {{ $letter->neighborhood_association_id }}, {{ $letter->family_member_id }}, '{{ $letter->letter_type->name }}')">
+                                    @if($letter->status == 'process')
+                                        <x-ui.button size="xs" color="blue">
                                             <svg class="w-3 h-3 me-1" xmlns="http://www.w3.org/2000/svg" width="24"
                                                  height="24" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -249,13 +174,22 @@ $reply = function ($id) {
                                                 <path fill="currentColor"
                                                       d="M12 22A10.01 10.01 0 0 1 2 12a1 1 0 0 1 2 0a7.995 7.995 0 0 0 14.92 3.999a1 1 0 0 1 1.731 1.002A10.03 10.03 0 0 1 12 22"/>
                                             </svg>
-                                            Proses
+                                            Sedang Diproses
                                         </x-ui.button>
-                                    @elseif($letter->status == 'process')
-                                        <x-ui.button size="xs" color="yellow" wire:click="reply({{ $letter->id }})">
-                                            <span class="iconify duo-icons--add-circle w-3 h-3 me-1"></span>
-                                            Unggah Surat
+                                    @elseif($letter->status == 'reply')
+                                        <x-ui.button size="xs" color="green">
+                                            <svg class="w-3 h-3 me-1" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                 height="24" viewBox="0 0 24 24">
+                                                <g fill="none" stroke="currentColor" stroke-width="1.1">
+                                                    <path stroke-linecap="round"
+                                                          d="m9.2 12l1.859 1.859a.2.2 0 0 0 .282 0L14.7 10.5"/>
+                                                    <rect width="14" height="14" x="5" y="5" rx="4"/>
+                                                </g>
+                                            </svg>
+                                            Surat Disetujui
                                         </x-ui.button>
+                                    @else
+                                        -
                                     @endif
                                 </td>
                             </tr>
@@ -273,5 +207,3 @@ $reply = function ($id) {
         </div>
     </div>
 </div>
-
-

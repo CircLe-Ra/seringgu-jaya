@@ -1,6 +1,7 @@
 <?php
 
 use function Livewire\Volt\{state, mount, on};
+use Illuminate\Notifications\DatabaseNotification;
 use App\Models\User;
 
 state('user');
@@ -9,10 +10,21 @@ mount(function () {
     $this->user =  User::find(auth()->user()->id);
 });
 
+$markAsRead = function ($notification) {
+    DatabaseNotification::find($notification['id'])->markAsRead();
+    if (auth()->user()->roles()->get()->first()->name == 'staff'){
+        $this->redirect(route('letter.mail-box'), navigate: true);
+    }elseif(auth()->user()->roles()->get()->first()->name == 'rt'){
+        $this->redirect(route('neighborhood-association.letter'), navigate: true);
+    }elseif(auth()->user()->roles()->get()->first()->name == 'warga'){
+        $this->redirect(route('citizen.mail-box'), navigate: true);
+    }
+}
+
 ?>
 
-<div class="flex items-center ms-3" x-data="{ open: false }" wire:poll.keep-alive>
-    <button x-on:click="open = !open" class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400" type="button">
+<div class="flex items-center ms-3" x-data="{ open: false }">
+    <button x-on:click="open = !open" class="relative inline-flex items-center text-sm font-medium text-center text-gray-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400" type="button" wire:poll.keep-alive>
         <svg x-cloak class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="#c29843" viewBox="0 0 14 20">
             <path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/>
         </svg>
@@ -32,10 +44,10 @@ mount(function () {
         <div class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-300 dark:bg-gray-700 dark:text-white">
             Notifikasi
         </div>
-        <div class="divide-y divide-gray-100 dark:divide-gray-800">
+        <div class="divide-y divide-gray-100 dark:divide-gray-800" wire:poll.keep-alive>
             @if($this->user->unreadNotifications->count())
                 @foreach($this->user->unreadNotifications as $notification)
-                    <a href="{{ route('letter.mail-box') }}" class="flex px-4 py-3 hover:bg-gray-200 bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
+                    <a x-on:click="open = false" wire:click="markAsRead({{ $notification }})" class="cursor-pointer flex px-4 py-3 hover:bg-gray-200 bg-gray-100 dark:hover:bg-gray-600 dark:bg-gray-700">
                         <div class="shrink-0">
                             <img class="rounded-full w-11 h-11" src="{{ $notification->data['profile_photo'] ? asset($notification->data['profile_photo']) : 'https://ui-avatars.com/api/?name=' . $notification->data['name'] }}" alt="Foto Proile">
                             <div class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">
@@ -46,7 +58,7 @@ mount(function () {
                             </div>
                         </div>
                         <div class="w-full ps-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">Permintaan baru dari : {{ $notification->data['name'] }}
+                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">{{ $notification->data['message'] }} oleh {{ $notification->data['name'] }} :
                                 <span class="font-bold text-gray-900 dark:text-white">"{{ $notification->data['letter'] }}"</span>
                             </div>
                             <div class="text-xs text-blue-600 dark:text-blue-500">{{ $notification->created_at->diffForHumans() }}</div>
@@ -63,7 +75,7 @@ mount(function () {
                 </a>
             @endif
         </div>
-        <a href="#" class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white {{$this->user->unreadNotifications->count() <= 0 ? 'cursor-not-allowed opacity-50' : ''}}" @disabled($this->user->unreadNotifications->count() <= 0)>
+        <a href="{{ $this->user->unreadNotifications->count() <= 0 ? '#' : route('notification') }}" wire class="block py-2 text-sm font-medium text-center text-gray-900 rounded-b-lg bg-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white {{$this->user->unreadNotifications->count() <= 0 ? 'cursor-not-allowed opacity-50 disabled' : ''}}">
             <div class="inline-flex items-center ">
                 <svg class="w-4 h-4 me-2 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
                     <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>

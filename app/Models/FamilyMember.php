@@ -32,4 +32,14 @@ class FamilyMember extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function letters()
+    {
+        return $this->hasMany(Letter::class);
+    }
+
+    public function family_card()
+    {
+        return $this->belongsTo(FamilyCard::class);
+    }
 }

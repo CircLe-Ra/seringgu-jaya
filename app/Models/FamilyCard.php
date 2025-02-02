@@ -38,4 +38,9 @@ class FamilyCard extends Model
         return $this->belongsTo(SubDistrict::class, 'sub_district_id');
     }
 
+    public function family_members()
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
 }
