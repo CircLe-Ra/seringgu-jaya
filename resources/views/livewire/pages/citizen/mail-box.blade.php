@@ -68,7 +68,7 @@ $reply = function ($id) {
 
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
         <div class="col-span-3 ">
-            <x-ui.card class="mt-2 w-full ">
+            <x-ui.card class="mt-2 w-full " wire:poll.keep-alive>
                 <x-slot name="header" class="grid grid-cols-1 lg:grid-cols-2 gap-2">
                     <div>
                         <h5 class="text-xl font-medium text-gray-900 dark:text-white">Surat Pengajuan</h5>
@@ -97,10 +97,10 @@ $reply = function ($id) {
                                 <td class="px-6 py-4">
                                     {{ $loop->iteration }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $letter->family_member->name }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $letter->letter_type->name }}
                                 </td>
                                 <td class="px-6 py-4">

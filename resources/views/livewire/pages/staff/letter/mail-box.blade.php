@@ -53,16 +53,17 @@ $store = function () {
                 $validate['response_letter_file'] = $letter->response_letter_file;
             }
         }
+        $validate['status'] = 'reply';
         $letter->update($validate);
-        $users = User::whereHas('neighborhoodAssociation', function ($query) use ($neighborhood_association_id) {
-            $query->where('id', $neighborhood_association_id);
-        })->orWhereHas('family_member', function ($query) use ($family_member_id) {
-            $query->where('id', $family_member_id);
+        $users = User::whereHas('neighborhoodAssociation', function ($query) use ($letter) {
+            $query->where('id', $letter->neighborhood_association_id);
+        })->orWhereHas('family_member', function ($query) use ($letter) {
+            $query->where('id', $letter->family_member_id);
         })->get();
         foreach ($users as $user) {
-            event(new LetterProcessEvent($user->id, $letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
+            event(new LetterProcessEvent($user->id, $letter->letter_type->name, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
         }
-        Notification::send($users, new NotificationLetterProcess($letter_type, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
+        Notification::send($users, new NotificationLetterProcess($letter->letter_type->name, 'Staff Kelurahan', auth()->user()->name, auth()->user()->profile_path, 'Balasan Surat'));
         $this->dispatch('pond-reset');
         $this->dispatch('close-modal', id: 'upload-letter-modal');
         Toaster::success('Surat berhasil ditambahkan');
@@ -70,7 +71,6 @@ $store = function () {
         $this->dispatch('close-modal', id: 'upload-letter-modal');
         Toaster::error('Surat gagal ditambahkan');
         Toaster::error($e->getMessage());
-        dd($e->getMessage());
     }
 };
 
@@ -182,7 +182,7 @@ $reply = function ($id) {
                                 <td class="px-6 py-4">
                                     @if($letter->letter_file != null)
                                         <a href="/storage/{{ $letter->letter_file }}" target="_blank"
-                                           class="underline text-grey-200 hover:text-white">
+                                           class="underline text-grey-200 dark:hover:text-white hover:text-gray-300">
                                             <svg class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
                                                  width="24" height="24" viewBox="0 0 24 24">
                                                 <path fill="currentColor" fill-rule="evenodd"
@@ -199,7 +199,7 @@ $reply = function ($id) {
                                 <td class="px-6 py-4">
                                     @if($letter->family_card_file != null)
                                         <a href="/storage/{{ $letter->family_card_file }}" target="_blank"
-                                           class="underline text-grey-200 hover:text-white">
+                                           class="underline text-grey-200 dark:hover:text-white hover:text-gray-300">
                                             <svg class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
                                                  width="24" height="24" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -213,7 +213,7 @@ $reply = function ($id) {
                                 <td class="px-6 py-4">
                                     @if($letter->resident_identification_card_file != null)
                                         <a href="/storage/{{ $letter->resident_identification_card_file }}"
-                                           target="_blank" class="underline text-grey-200 hover:text-white">
+                                           target="_blank" class="underline text-grey-200 dark:hover:text-white hover:text-gray-300">
                                             <svg class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
                                                  width="24" height="24" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -227,7 +227,7 @@ $reply = function ($id) {
                                 <td class="px-6 py-4">
                                     @if($letter->response_letter_file != null)
                                         <a href="/storage/{{ $letter->response_letter_file }}" target="_blank"
-                                           class="underline text-grey-200 hover:text-white">
+                                           class="underline text-grey-200 dark:hover:text-white hover:text-gray-300">
                                             <svg class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
                                                  width="24" height="24" viewBox="0 0 24 24">
                                                 <path fill="currentColor"

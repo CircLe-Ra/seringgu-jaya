@@ -16,12 +16,15 @@ title('Penduduk');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
 state(['id','family_card_number','head_of_family','province_id','regency_id','district_id','sub_district_id','citizen_association_id','neighborhood_association_id','address','postal_code']);
-state(['cities' => [], 'districts' => [], 'sub_districts' => [], 'neighborhood_associations' => []]);
+state(['cities' => [], 'districts' => [], 'sub_districts' => []]);
 
 mount(function () {
     if(auth()->user()->roles()->get()->first()->name != 'rt'){
         abort(404);
     }
+
+    $this->citizen_association_id = auth()->user()->neighborhoodAssociation->citizen->id;
+    $this->neighborhood_association_id = auth()->user()->neighborhoodAssociation->id;
 });
 
 $provinces = computed(function () {
@@ -30,6 +33,10 @@ $provinces = computed(function () {
 
 $citizen_associations = computed(function () {
     return CitizenAssociation::all();
+});
+
+$neighborhood_associations = computed(function () {
+    return NeighborhoodAssociation::all();
 });
 
 updated(['province_id' => function () {
@@ -47,8 +54,6 @@ updated(['province_id' => function () {
 }, 'district_id' => function () {
     $this->sub_districts = SubDistrict::where('district_id', $this->district_id)->get();
     $this->sub_district_id = null;
-}, 'citizen_association_id' => function () {
-    $this->neighborhood_associations = NeighborhoodAssociation::where('citizen_association_id', $this->citizen_association_id)->get();
 }]);
 
 on(['close-modal-reset' => function ($wireModels) {
@@ -58,8 +63,9 @@ on(['close-modal-reset' => function ($wireModels) {
     $this->cities = [];
     $this->districts = [];
     $this->sub_districts = [];
-    $this->neighborhood_associations = [];
-
+},'open-modal' => function () {
+    $this->citizen_association_id = auth()->user()->neighborhoodAssociation->citizen->id;
+    $this->neighborhood_association_id = auth()->user()->neighborhoodAssociation->id;
 }]);
 
 $familyCards = computed(function () {
@@ -194,11 +200,11 @@ $destroy = function ($id) {
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mb-2">
                 <x-ui.input-select :selected="$this->citizen_association_id" label="RW" id="citizen_association_id" name="citizen_association_id"
-                                   required wire:model.live="citizen_association_id"
-                                   server :data="$this->citizen_associations" display_name="position"/>
+                                   required wire:model="citizen_association_id"
+                                   server :data="$this->citizen_associations" display_name="position" :disabled="true" />
                 <x-ui.input-select :selected="$this->neighborhood_association_id" label="RT" id="neighborhood_association_id" name="neighborhood_association_id"
-                                   required wire:model.live="neighborhood_association_id"
-                                   server :data="$this->neighborhood_associations" display_name="position"/>
+                                   required wire:model="neighborhood_association_id"
+                                   server :data="$this->neighborhood_associations" display_name="position" :disabled="true" />
                 <x-ui.input type="text" label="Alamat" wire:model="address" id="address"/>
                 <x-ui.input type="number" label="Kode Pos" wire:model="postal_code" id="postal_code"/>
             </div>
