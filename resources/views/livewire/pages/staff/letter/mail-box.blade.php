@@ -70,6 +70,7 @@ $store = function () {
         $this->dispatch('close-modal', id: 'upload-letter-modal');
         Toaster::error('Surat gagal ditambahkan');
         Toaster::error($e->getMessage());
+        dd($e->getMessage());
     }
 };
 

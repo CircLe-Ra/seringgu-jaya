@@ -102,10 +102,10 @@ $destroy = function ($id) {
                                     @endif
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ $news->title }}
+                                    {{ str()->limit($news->title,20,'...') }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ $news->slug }}
+                                    {{ str()->limit($news->slug,20,'...') }}
                                 </td>
                                 <td class="px-6 py-4">
                                     {{ str()->limit(strip_tags($news->content),40,'...') }}

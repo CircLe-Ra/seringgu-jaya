@@ -225,7 +225,7 @@ $store = function () {
     </x-ui.breadcrumbs>
     <x-ui.modal id="upload-letter-modal">
         <x-slot name="header">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Pengajuan Surat</h5>
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Buat Surat</h5>
         </x-slot>
         <x-slot name="content">
             <div x-data="{ show : @entangle('edit') }" class="mt-3">
