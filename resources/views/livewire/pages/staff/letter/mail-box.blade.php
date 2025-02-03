@@ -144,7 +144,7 @@ $reply = function ($id) {
                 Batal
             </x-ui.button>
             <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
-                         wire:loading.class="cursor-not-allowed" wire:target="store" wire:click="store"/>
+                         wire:loading.class="cursor-not-allowed" wire:target="store,response_letter_file" wire:click="store"/>
         </x-slot>
     </x-ui.modal>
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
