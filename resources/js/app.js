@@ -2,6 +2,7 @@ import './bootstrap';
 import '../../vendor/masmerise/livewire-toaster/resources/js';
 import 'flowbite';
 import { initFlowbite } from "flowbite";
+import Glide from '@glidejs/glide';
 
 document.addEventListener('livewire:navigated', () => {
     initFlowbite();
@@ -44,4 +45,18 @@ document.addEventListener('livewire:navigated', () => {
             navbar.classList.remove('border-b', 'border-gray-200', 'dark:border-gray-600');
         }
     });
+
+    new Glide('#glide', {
+        type: 'carousel', // Tipe slider (carousel atau slider)
+        perView: 5, // Jumlah item yang terlihat sekaligus
+        gap: 20, // Jarak antar item
+        focusAt: 'center', // Fokus ke item tengah
+        breakpoints: {
+            // Responsive breakpoints
+            1024: { perView: 4 },
+            768: { perView: 3 },
+            640: { perView: 2 }
+        }
+    }).mount();
+
 });
