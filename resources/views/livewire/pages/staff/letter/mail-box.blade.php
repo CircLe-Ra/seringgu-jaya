@@ -136,7 +136,7 @@ $reply = function ($id) {
                             color="warning"
                             value="Sebelum mengunggah file, diharapkan untuk memeriksa kembali file yang akan diunggah guna meminimalkan kemungkinan kesalahan. Perlu diketahui, file yang sudah diunggah tidak dapat diubah."/>
             </div>
-            <x-ui.filepond id="response_letter_file" wire:model="response_letter_file" label="Surat Balasan"/>
+            <x-ui.filepond id="response_letter_file" wire:model="response_letter_file" maxFileSize="2048" label="Surat Balasan"/>
         </x-slot>
         <x-slot name="footer">
             <x-ui.button size="sm" reset color="light" class="mr-2"
@@ -144,7 +144,7 @@ $reply = function ($id) {
                 Batal
             </x-ui.button>
             <x-ui.button size="sm" loading-only title="Simpan" submit color="blue" wire:loading.attr="disabled"
-                         wire:loading.class="cursor-not-allowed" wire:target="store,response_letter_file" wire:click="store"/>
+                         wire:loading.class="cursor-not-allowed" wire:target="store" wire:click="store"/>
         </x-slot>
     </x-ui.modal>
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
