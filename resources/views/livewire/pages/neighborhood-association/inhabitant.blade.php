@@ -69,9 +69,11 @@ on(['close-modal-reset' => function ($wireModels) {
 }]);
 
 $familyCards = computed(function () {
-    return FamilyCard::where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id)->where('family_card_number', 'like', '%' . $this->search . '%')
-        ->orWhere('head_of_family', 'like', '%' . $this->search . '%')
-        ->paginate($this->show, pageName: 'family-card-page');
+    return FamilyCard::where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id)
+        ->where(function ($query) {
+            $query->where('family_card_number', 'like', '%' . $this->search . '%')
+                ->orWhere('head_of_family', 'like', '%' . $this->search . '%');
+        })->paginate($this->show, pageName: 'family-card-page');
 });
 
 $save = function () {
