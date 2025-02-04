@@ -1,6 +1,6 @@
 <?php
 
-use function Livewire\Volt\{state, layout, title, mount, computed, updated, on, usesFileUploads};
+use function Livewire\Volt\{state, layout, title, mount, computed, updated, on, usesFileUploads, usesPagination};
 use App\Models\News;
 use Masmerise\Toaster\Toaster;
 use Carbon\Carbon;
@@ -8,13 +8,13 @@ use Carbon\Carbon;
 layout('layouts.app');
 title('Berita');
 state(['show' => 5, 'search' => ''])->url();
-
+usesPagination();
 mount(function () {
 });
 
 $news = computed(function () {
     return News::where('title', 'like', '%' . $this->search . '%')
-        ->latest()->paginate($this->show, pageName: 'news-page');
+        ->latest()->paginate($this->show, pageName: 'news-list-page');
 });
 
 $destroy = function ($id) {

@@ -11,8 +11,6 @@ Route::middleware(['auth'])->group(function () {
 
     //staff
     //master-data
-    Volt::route('master-data/citizen-association', 'pages.staff.master-data.citizen-association')->name('master-data.citizen-association');
-    Volt::route('master-data/neighborhood-association', 'pages.staff.master-data.neighborhood-association')->name('master-data.neighborhood-association');
     Volt::route('master-data/education', 'pages.staff.master-data.education')->name('master-data.education');
     Volt::route('master-data/religion', 'pages.staff.master-data.religion')->name('master-data.religion');
     Volt::route('master-data/blood-group', 'pages.staff.master-data.blood-group')->name('master-data.blood-group');
@@ -21,6 +19,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('master-data/role', 'pages.staff.master-data.role')->name('master-data.role');
     Volt::route('master-data/letter-type', 'pages.staff.master-data.letter-type')->name('master-data.letter-type');
     //Letter
+    Volt::route('citizen-association', 'pages.staff.master-data.citizen-association')->name('citizen-association');
+    Volt::route('neighborhood-association', 'pages.staff.master-data.neighborhood-association')->name('neighborhood-association');
     Volt::route('letter/mail-box', 'pages.staff.letter.mail-box')->name('letter.mail-box');
     //portal
 //    Volt::route('master-data/role', 'pages.staff.master-data.role')->name('master-data.role');

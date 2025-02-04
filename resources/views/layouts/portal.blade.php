@@ -16,6 +16,7 @@
         </script>
     </head>
     <body class="">
+        <x-bg-gradient />
         <header>
             <livewire:layout.portal-navigation />
         </header>

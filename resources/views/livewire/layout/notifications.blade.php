@@ -58,7 +58,7 @@ $markAsRead = function ($notification) {
                             </div>
                         </div>
                         <div class="w-full ps-3">
-                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">{{ $notification->data['message'] }} oleh {{ $notification->data['name'] }} :
+                            <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">{{ $notification->data['message'] ?? '' }} oleh {{ $notification->data['name'] }} :
                                 <span class="font-bold text-gray-900 dark:text-white">"{{ $notification->data['letter'] }}"</span>
                             </div>
                             <div class="text-xs text-blue-600 dark:text-blue-500">{{ $notification->created_at->diffForHumans() }}</div>

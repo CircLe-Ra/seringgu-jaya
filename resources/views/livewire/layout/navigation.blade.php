@@ -21,7 +21,7 @@ $logout = function (Logout $logout) {
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                         </svg>
                     </button>
-                    <a href="https://flowbite.com" class="flex ms-2 md:me-24">
+                    <a href="/" class="flex ms-2 md:me-24">
                         <x-application-logo />
                     </a>
                 </div>
@@ -79,7 +79,7 @@ $logout = function (Logout $logout) {
         </div>
     </nav>
 
-    <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-16 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 " aria-label="Sidebar">
+    <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 " aria-label="Sidebar">
         <div class="h-full px-3 pb-4 bg-white dark:bg-gray-800 scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
             <ul class="space-y-2 font-medium">
                 <li>
@@ -159,12 +159,6 @@ $logout = function (Logout $logout) {
                     </button>
                     <ul id="dropdown-example" class="{{  request()->routeIs('master-data.*') ? 'block' : 'hidden'}} py-2 space-y-2">
                         <li>
-                            <a href="{{ route('master-data.citizen-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Rukun Warga</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('master-data.neighborhood-association') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.neighborhood-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Rukun Tetangga</a>
-                        </li>
-                        <li>
                             <a href="{{ route('master-data.religion') }}" wire:navigate class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 {{ request()->routeIs('master-data.religion') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">Agama</a>
                         </li>
                         <li>
@@ -187,6 +181,18 @@ $logout = function (Logout $logout) {
                         </li>
 
                     </ul>
+                </li>
+                <li>
+                    <a href="{{ route('citizen-association') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('citizen-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><g fill="none"><g clip-path="url(#fluentColorPeopleHome209)"><path fill="url(#fluentColorPeopleHome200)" d="M5.009 11A2 2 0 0 0 3 13c0 1.691.833 2.966 2.135 3.797C6.417 17.614 8.145 18 10 18s3.583-.386 4.865-1.203C16.167 15.967 17 14.69 17 13a2 2 0 0 0-2-2z"/><path fill="url(#fluentColorPeopleHome201)" d="M5.009 11A2 2 0 0 0 3 13c0 1.691.833 2.966 2.135 3.797C6.417 17.614 8.145 18 10 18s3.583-.386 4.865-1.203C16.167 15.967 17 14.69 17 13a2 2 0 0 0-2-2z"/><path fill="url(#fluentColorPeopleHome206)" fill-opacity="0.75" d="M5.009 11A2 2 0 0 0 3 13c0 1.691.833 2.966 2.135 3.797C6.417 17.614 8.145 18 10 18s3.583-.386 4.865-1.203C16.167 15.967 17 14.69 17 13a2 2 0 0 0-2-2z"/><path fill="url(#fluentColorPeopleHome207)" fill-opacity="0.55" d="M5.009 11A2 2 0 0 0 3 13c0 1.691.833 2.966 2.135 3.797C6.417 17.614 8.145 18 10 18s3.583-.386 4.865-1.203C16.167 15.967 17 14.69 17 13a2 2 0 0 0-2-2z"/><path fill="url(#fluentColorPeopleHome208)" fill-opacity="0.55" d="M5.009 11A2 2 0 0 0 3 13c0 1.691.833 2.966 2.135 3.797C6.417 17.614 8.145 18 10 18s3.583-.386 4.865-1.203C16.167 15.967 17 14.69 17 13a2 2 0 0 0-2-2z"/><path fill="url(#fluentColorPeopleHome202)" d="M10 2a4 4 0 1 0 0 8a4 4 0 0 0 0-8"/><path fill="url(#fluentColorPeopleHome203)" d="M14 15h3v4h-3z"/><path fill="url(#fluentColorPeopleHome204)" d="M12 15.46c0-.292.127-.569.349-.759l2.826-2.422a.5.5 0 0 1 .651 0l2.825 2.422c.221.19.349.467.349.76v3.04a.5.5 0 0 1-.5.5l-2-.001v-2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V19h-2a.5.5 0 0 1-.5-.5z"/><path fill="url(#fluentColorPeopleHome205)" fill-rule="evenodd" d="M14.518 11.359a1.5 1.5 0 0 1 1.964 0l3.26 2.824a.75.75 0 1 1-.983 1.134L15.5 12.492l-3.259 2.825a.75.75 0 1 1-.982-1.134z" clip-rule="evenodd"/></g><defs><linearGradient id="fluentColorPeopleHome200" x1="6.329" x2="8.591" y1="11.931" y2="19.153" gradientUnits="userSpaceOnUse"><stop offset=".125" stop-color="#00adff"/><stop offset="1" stop-color="#355cf7"/></linearGradient><linearGradient id="fluentColorPeopleHome201" x1="10" x2="13.167" y1="10.167" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#001879" stop-opacity="0"/><stop offset="1" stop-color="#021d88"/></linearGradient><linearGradient id="fluentColorPeopleHome202" x1="7.902" x2="11.979" y1="3.063" y2="9.574" gradientUnits="userSpaceOnUse"><stop offset=".125" stop-color="#00adff"/><stop offset="1" stop-color="#355cf7"/></linearGradient><linearGradient id="fluentColorPeopleHome203" x1="15.5" x2="12.853" y1="15" y2="19.413" gradientUnits="userSpaceOnUse"><stop stop-color="#944600"/><stop offset="1" stop-color="#cd8e02"/></linearGradient><linearGradient id="fluentColorPeopleHome204" x1="11.764" x2="18.118" y1="12.349" y2="18.864" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd394"/><stop offset="1" stop-color="#ffb357"/></linearGradient><linearGradient id="fluentColorPeopleHome205" x1="15.929" x2="15.193" y1="9.711" y2="15.112" gradientUnits="userSpaceOnUse"><stop stop-color="#ff921f"/><stop offset="1" stop-color="#eb4824"/></linearGradient><radialGradient id="fluentColorPeopleHome206" cx="0" cy="0" r="1" gradientTransform="matrix(5 0 0 4.26136 15 17)" gradientUnits="userSpaceOnUse"><stop stop-color="#0a1852" stop-opacity="0.75"/><stop offset="1" stop-color="#0a1852" stop-opacity="0"/></radialGradient><radialGradient id="fluentColorPeopleHome207" cx="0" cy="0" r="1" gradientTransform="rotate(90 2 16)scale(1.5)" gradientUnits="userSpaceOnUse"><stop stop-color="#0a1852" stop-opacity="0.322"/><stop offset="1" stop-color="#0a1852" stop-opacity="0"/></radialGradient><radialGradient id="fluentColorPeopleHome208" cx="0" cy="0" r="1" gradientTransform="matrix(0 1 -1.67609 0 12 15)" gradientUnits="userSpaceOnUse"><stop stop-color="#0a1852" stop-opacity="0.75"/><stop offset="1" stop-color="#0a1852" stop-opacity="0"/></radialGradient><clipPath id="fluentColorPeopleHome209"><path fill="#fff" d="M0 0h20v20H0z"/></clipPath></defs></g></svg>
+                        <span class="ms-3">Rukun Warga</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('neighborhood-association') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('neighborhood-association') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#00adff" d="M6.5 15v-4h3v4H13V9h2L8 3L1 9h2v6zM9 16v2h6v-2l3 3l-3 3v-2H9v2l-3-3zm14-7h-2v6h-6v-5h4l-5.46-4.89L16 3z"/></svg>
+                        <span class="ms-3">Rukun Tetangga</span>
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('letter.mail-box') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('letter.mail-box') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">

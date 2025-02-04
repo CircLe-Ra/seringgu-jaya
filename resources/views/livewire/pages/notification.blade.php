@@ -51,7 +51,7 @@ $markAsRead = function ($notification) {
                                     <img class="rounded-full w-11 h-11" src="{{ $notification->data['profile_photo'] ? asset($notification->data['profile_photo']) : 'https://ui-avatars.com/api/?name=' . $notification->data['name'] }}" alt="Foto Proile">
                                     <div class="ps-3">
                                         <div class="text-base font-semibold">{{ $notification->data['letter'] }}</div>
-                                        <div class="font-normal text-gray-500">{{ $notification->data['message'] }} oleh {{ $notification->data['name'] }}</div>
+                                        <div class="font-normal text-gray-500">{{ $notification->data['message'] ?? '' }} oleh {{ $notification->data['name'] }}</div>
                                     </div>
                                 </th>
                                 <td class="px-6 py-4">

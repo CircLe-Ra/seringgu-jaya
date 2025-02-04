@@ -18,9 +18,10 @@
         @stack('scripts')
     </head>
     <body class="bg-gray-100 dark:bg-gray-900 ">
+        <x-bg-gradient />
         <livewire:layout.navigation />
         <div class="pt-4  sm:ml-64">
-            <div class="mt-12 rounded-lg dark:border-gray-700 px-2">
+            <div class="mt-[55px] rounded-lg dark:border-gray-700 px-2">
                 {{ $slot }}
             </div>
         </div>

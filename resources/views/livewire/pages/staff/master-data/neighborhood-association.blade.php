@@ -142,7 +142,7 @@ $destroy = function ($id) {
                 'text' => 'Master Data'
             ],[
                 'text' => 'Rukun Tetangga (RT)',
-                'href' => route('master-data.citizen-association')
+                'href' => route('citizen-association')
             ]
         ]">
         <x-slot name="actions">
