@@ -46,7 +46,7 @@ $showCategory = function ($id) {
         <section class="bg-white dark:bg-gray-800 w-full px-4">
             <div class="grid py-10 mx-auto max-w-screen-xl grid-cols-1 {{ $this->manyNews->count() >= 1 ? 'lg:grid-cols-2' : 'lg:grid-cols-1' }} gap-10">
                 <div class="">
-                    <div class=" overflow-hidden max-w-full">
+                    <div class=" overflow-hidden max-w-full h-96 rounded-xl">
                         @if ($this->oneNews->image ?? false)
                             <img class="object-cover rounded-xl " src="{{ asset('storage/' . $this->oneNews->image) }}" alt="News Image" />
                         @endif
@@ -58,7 +58,7 @@ $showCategory = function ($id) {
                             @endforeach
                         @endif
                     </div>
-                    <a href="#" class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify"> {!! Str::of($this->oneNews->title ?? '')->limit(60) !!}</a>
+                    <a href="{{ route('portal.read-news', ['slug' => $this->oneNews->slug]) }}" wire:navigate class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify"> {!! Str::of($this->oneNews->title ?? '')->limit(60) !!}</a>
                     <div class="flex items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
                         @if ($this->oneNews->user->profile_path ?? false)
                             <img class="rounded-full w-8 h-8" src="{{ $this->oneNews->user->profile_path != null ? asset('storage/' . $this->oneNews->user->profile_path) : 'https://ui-avatars.com/api/?name=' . $this->oneNews->user->name }}" alt="Foto Proile" />
@@ -71,10 +71,10 @@ $showCategory = function ($id) {
                         </div>
                     </div>
                     <div class="text-gray-700 dark:text-gray-400 text-justify text-lg">
-                        {{ str()->limit(strip_tags($this->oneNews->content ?? ''),100,'...') }}
+                        {{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($this->oneNews->content ?? '')),100,'...') }}
                     </div>
                     <div class="pt-4">
-                        <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
+                        <a wire:navigate href="{{ route('portal.read-news', ['slug' => $this->oneNews->slug]) }}" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
                             <svg aria-hidden="true" class="w-4 h-4 -mt-1 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     </div>
@@ -87,12 +87,12 @@ $showCategory = function ($id) {
                                     <span class="px-3 py-1 text-sm bg-blue-700 text-gray-50 rounded"> {{ $newsCategory->name }} </span>
                                 @endforeach
                             </div>
-                            <a href="#" class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify"> {!! Str::of($news->title)->limit(45) !!}</a>
+                            <a wire:navigate href="{{ route('portal.read-news', ['slug' => $news->slug]) }}" class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify">{{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($news->title ?? '')),45,'...') }}</a>
                             <div class="text-gray-700 dark:text-gray-400 text-justify text-lg py-4">
-                                {{ str()->limit(strip_tags($news->content),100,'...') }}
+                                {{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($news->content ?? '')),100,'...') }}
                             </div>
                             <div class="">
-                                <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
+                                <a wire:navigate href="{{ route('portal.read-news', ['slug' => $news->slug]) }}" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
                                     <svg aria-hidden="true" class="w-4 h-4 -mt-1 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                 </a>
                             </div>
@@ -104,11 +104,11 @@ $showCategory = function ($id) {
         <section class="bg-gray-100 dark:bg-gray-900 border-t border-b w-full border-gray-200 dark:border-gray-700 px-4">
             <div class="mx-auto max-w-screen-xl pt-5 pb-2 flex flex-nowrap scrollbar-thumb-gray-300 scrollbar-track-gray-100  overflow-x-scroll scrollbar-thin dark:scrollbar-track-gray-900 dark:scrollbar-thumb-gray-700 items-center">
                 @if($this->allCategories->count() > 0)
-                    <button wire:click="showAllCategories" class="bg-gray-200 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 text-nowrap border border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500">
+                    <button wire:click="showAllCategories" class="bg-gray-200 focus:outline-none hover:bg-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 text-nowrap {{ $this->category == null ? ' border border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500' : 'dark:text-white' }}">
                       Semua Kategori
                     </button>
                     @foreach($this->allCategories as $category)
-                        <button wire:click="showCategory({{ $category->id }})" class="text-gray-900 bg-gray-200 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 text-nowrap ">
+                        <button wire:click="showCategory({{ $category->id }})" class="bg-gray-200 focus:outline-none hover:bg-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 text-nowrap {{ $this->category == $category->id ? ' border border-blue-600 text-blue-600 dark:text-blue-500 dark:border-blue-500' : 'dark:text-white' }}">
                             {{ $category->name }}
                         </button>
                     @endforeach
@@ -121,7 +121,7 @@ $showCategory = function ($id) {
                     @if($this->news->count() > 0)
                         @foreach($this->news as $news)
                             <div class="flex gap-4 items-center">
-                                <div class="rounded-xl overflow-hidden max-w-64 max-h-full ">
+                                <div class="rounded-xl overflow-hidden max-w-64 max-h-48 ">
                                     @if ($news->image ?? false)
                                         <img class="object-cover rounded-xl" src="{{ asset('storage/' . $news->image) }}" alt="News Image" />
                                     @endif
@@ -134,7 +134,7 @@ $showCategory = function ($id) {
                                             @endforeach
                                         @endif
                                     </div>
-                                    <a href="#" class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify"> {!! Str::of($news->title ?? '')->limit(40) !!}</a>
+                                    <a wire:navigate href="{{ route('portal.read-news', ['slug' => $news->slug]) }}" class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify">{{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($news->title ?? '')),40,'...') }}</a>
                                     <div class="flex items-center pb-2 text-gray-900 whitespace-nowrap dark:text-white">
                                         @if ($news->user->profile_path ?? false)
                                             <img class="rounded-full w-8 h-8" src="{{ $news->user->profile_path != null ? asset('storage/' . $news->user->profile_path) : 'https://ui-avatars.com/api/?name=' . $news->user->name }}" alt="Foto Proile" />
@@ -147,10 +147,10 @@ $showCategory = function ($id) {
                                         </div>
                                     </div>
                                     <div class="text-gray-700 dark:text-gray-400 text-justify text-lg">
-                                        {{ str()->limit(strip_tags($news->content ?? ''),100,'...') }}
+                                        {{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($news->content ?? '')),100,'...') }}
                                     </div>
                                     <div class="pt-4 flex justify-end">
-                                        <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
+                                        <a wire:navigate href="{{ route('portal.read-news', ['slug' => $news->slug]) }}" class="text-blue-600 dark:text-blue-500 hover:underline text-lg font-semibold ">Baca Selengkapnya
                                             <svg aria-hidden="true" class="w-4 h-4 -mt-1 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                         </a>
                                     </div>
@@ -179,10 +179,12 @@ $showCategory = function ($id) {
                 </div>
             </div>
         </section>
+        @if($this->news->count() > 5)
         <section class="bg-gray-100 dark:bg-gray-900 border-t border-b w-full border-gray-200 dark:border-gray-700 px-4" >
             <div class="mx-auto max-w-screen-xl py-6 flex flex-nowrap items-center justify-center">
                 {{ $this->news->links('livewire.pagination-portal') }}
             </div>
         </section>
+        @endif
     </div>
 @endpersist

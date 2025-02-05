@@ -41,7 +41,10 @@ $currentCategories = computed(function () {
 on(['close-modal-reset' => function ($wireModels) {
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
+},'trix_value_updated' => function ($value) {
+    $this->content = $value;
 }]);
+
 
 // Update the slug based on title change
 updated(['title' => fn() => $this->slug = Str::slug($this->title)]);
@@ -226,7 +229,7 @@ $deleteImage = function () {
                 <x-ui.input id="slug" name="slug" wire:model="slug" label="Slug Informasi" placeholder="Masukan Slug"
                             main-class="mb-5" readonly/>
             </div>
-            <livewire:jodit-text-editor wire:model.live="content" :buttons="['bold', 'italic', 'underline', 'strikeThrough', '|', 'left', 'center', 'right', '|', 'link', 'image']"/>
+            <livewire:trix :value="$this->content" />
         </div>
         <div class="min-w-sm p-2 hidden xl:block">
             <div class="flex flex-col space-y-2 ">

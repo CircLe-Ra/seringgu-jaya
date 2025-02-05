@@ -1,11 +1,7 @@
 import axios from 'axios';
-import 'jodit/esm/plugins/resizer/resizer';
-import 'jodit/esm/plugins/video/video';
 import { Modal, Dismiss } from 'flowbite';
-import { Jodit } from 'jodit';
 import { Datepicker } from 'flowbite';
 
-window.Jodit = Jodit;
 window.Modal = Modal;
 window.Dismiss = Dismiss;
 window.Datepicker = Datepicker;

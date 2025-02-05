@@ -108,7 +108,7 @@ $destroy = function ($id) {
                                     {{ str()->limit($news->slug,20,'...') }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ str()->limit(strip_tags($news->content),40,'...') }}
+                                    {{ str()->limit(str_replace('&nbsp;', ' ', strip_tags($news->content)),40,'...') }}
                                 </td>
                                 <td class="px-6 py-4">
                                    {{ $news->published == 'private' ? 'Privat' : 'Diterbitkan' }}

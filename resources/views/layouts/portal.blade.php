@@ -15,7 +15,7 @@
             }
         </script>
     </head>
-    <body class="">
+    <body class="bg-white dark:bg-gray-800">
         <x-bg-gradient />
         <header>
             <livewire:layout.portal-navigation />
@@ -23,12 +23,12 @@
 
         {{ $slot }}
 
-        <footer class="p-4 bg-gray-50 sm:p-6 dark:bg-gray-800">
+        <footer class="p-4 sm:p-6 ">
             <div class="mx-auto max-w-screen-xl">
                 <div class="md:flex md:justify-between">
                     <div class="mb-6 md:mb-0">
                         <a href="/" class="flex items-center" wire:navigate>
-                            <x-application-logo />
+                            <x-application-logo size="xl" text-size="xl" />
                         </a>
                     </div>
                     <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-2">

@@ -1,7 +1,6 @@
 @import url('../../public/font/GTWalsheimPro.css');
 @import url('../../public/3party/filepond/filepond.css');
 @import url('../../public/3party/filepond/filepond-plugin-image-preview.css');
-@import 'jodit/es2021/jodit.css';
 @import 'simple-notify/dist/simple-notify.css';
 @tailwind base;
 @tailwind components;
@@ -66,69 +65,131 @@ html, body {
     /* Darker green for success */
 }
 
-
 /* DARK MODE */
 
-/* Container Jodit Editor */
-.dark .jodit-container {
-    background-color: #1a202c; /* Tailwind bg-gray-900 */
-    border-color: #2d3748; /* Tailwind border-gray-800 */
-    color: #e2e8f0; /* Tailwind text-gray-200 */
+/* Trix Editor */
+html.dark {
+.trix-button-row {
+    .trix-button-group {
+        border-color: #2d3748;
+
+        .trix-button {
+            background-color: #b3c4dc;
+            border-color: #2d3748;
+
+            &.trix-active {
+                background-color: #6d8ba8;
+            }
+        }
+    }
+}
+    trix-editor {
+        color: #e2e8f0;
+        border: 1px solid #5a6473;
+        border-radius: 0.5rem;
+    }
+}
+/* Menyembunyikan file tools */
+.trix-button-group.trix-button-group--file-tools {
+    display: none;
 }
 
-/* Toolbar Jodit (Header) */
-.dark .jodit-toolbar {
-    background-color: #2d3748; /* Tailwind bg-gray-800 */
-    border-color: #1f2a38; /* Tailwind border-gray-700 */
-    color: #e2e8f0; /* Tailwind text-gray-200 */
+@layer utilities {
+    trix-editor {
+        border: 1px solid #5a6473;
+        border-radius: 0.5rem;
+    }
+
+    trix-editor h1 {
+        font-size: 1.25rem !important;
+        line-height: 1.25rem !important;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    trix-editor a:not(.no-underline) {
+        text-decoration: underline;
+    }
+
+    trix-editor a:visited {
+        color: green;
+    }
+
+    trix-editor ul {
+        list-style-type: disc;
+        padding-left: 1rem;
+    }
+
+    trix-editor ol {
+        list-style-type: decimal;
+        padding-left: 1rem;
+    }
+
+    trix-editor pre {
+        display: inline-block;
+        width: 100%;
+        vertical-align: top;
+        font-family: monospace;
+        font-size: 1.5em;
+        padding: 0.5em;
+        white-space: pre;
+        background-color: #eee;
+        overflow-x: auto;
+    }
+
+    trix-editor blockquote {
+        border: 0 solid #ccc;
+        border-left-width: 0px;
+        border-left-width: 0.3em;
+        margin-left: 0.3em;
+        padding-left: 0.6em;
+    }
 }
 
-/* Konten (Editor Teks) */
-.dark .jodit-wysiwyg {
-    background-color: #171e29;
-    color: #e2e8f0; /* Tailwind text-gray-200 */
-}
+@layer utilities {
 
-/* Tombol Toolbar */
-.dark .jodit-toolbar-button__button {
-    background-color: #374152;
-    color: #374152;
-}
+   .article h1 {
+        font-size: 1.25rem !important;
+        line-height: 1.25rem !important;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
 
-.dark .jodit-toolbar-button__button:hover {
-    background-color: #4c5663;
-    color: #4c5663;
-}
+   .article a:not(.no-underline) {
+        text-decoration: underline;
+    }
 
-.dark .jodit-toolbar-button__button:hover svg.jodit-icon {
-    fill: #fafafa;
-}
+   .article a:visited {
+        color: green;
+    }
 
+   .article ul {
+        list-style-type: disc;
+        padding-left: 1rem;
+    }
 
-.dark svg.jodit-icon {
-    fill: #9da4b0;
-}
+   .article ol {
+        list-style-type: decimal;
+        padding-left: 1rem;
+    }
 
-.dark .jodit-ui-group {
-    background-color: #374152;
-    color: #e2e8f0;
-}
+   .article pre {
+        display: inline-block;
+        width: 100%;
+        vertical-align: top;
+        font-family: monospace;
+        font-size: 1.5em;
+        padding: 0.5em;
+        white-space: pre;
+        background-color: #eee;
+        overflow-x: auto;
+    }
 
-.dark .jodit-toolbar__box:not(:empty) {
-    --jd-color-background-default: #1f2a38;
-    overflow: hidden;
-    border-radius: var(--jd-border-radius-default) var(--jd-border-radius-default) 0 0;
-    border-bottom: 1px solid #1f2a38;
-    background-color: var(--jd-color-background-default);
-}
-.dark .jodit-toolbar__box:not(:empty) .jodit-toolbar-editor-collection::after {
-    background-color: #4c5663;
-}
-
-.dark .jodit-ui-separator {
-    padding: 0;
-    border-right: 1px solid #4c5663;
-    border-left: 0;
-    margin: 2px;
-    cursor: default;
+   .article blockquote {
+        border: 0 solid #ccc;
+        border-left-width: 0px;
+        border-left-width: 0.3em;
+        margin-left: 0.3em;
+        padding-left: 0.6em;
+    }
 }
