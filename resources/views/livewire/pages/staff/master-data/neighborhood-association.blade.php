@@ -137,12 +137,9 @@ $destroy = function ($id) {
             [
                 'href' => route('dashboard'),
                 'text' => 'Dashboard'
-            ],
-            [
-                'text' => 'Master Data'
             ],[
                 'text' => 'Rukun Tetangga (RT)',
-                'href' => route('citizen-association')
+                'href' => route('neighborhood-association')
             ]
         ]">
         <x-slot name="actions">

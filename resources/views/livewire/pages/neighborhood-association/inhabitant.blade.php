@@ -15,8 +15,8 @@ layout('layouts.app');
 title('Penduduk');
 usesPagination();
 state(['show' => 5, 'search' => ''])->url();
-state(['id','family_card_number','head_of_family','province_id','regency_id','district_id','sub_district_id','citizen_association_id','neighborhood_association_id','address','postal_code']);
-state(['cities' => [], 'districts' => [], 'sub_districts' => []]);
+state(['id','family_card_number','head_of_family','citizen_association_id','neighborhood_association_id','address','postal_code']);
+state(['cities' => [], 'districts' => [], 'sub_districts' => [], 'province_id' => 28, 'regency_id' => 406, 'district_id' => 3527, 'sub_district_id' => 39841]);
 
 mount(function () {
     if(auth()->user()->roles()->get()->first()->name != 'rt'){
@@ -25,6 +25,10 @@ mount(function () {
 
     $this->citizen_association_id = auth()->user()->neighborhoodAssociation->citizen->id;
     $this->neighborhood_association_id = auth()->user()->neighborhoodAssociation->id;
+
+    $this->cities = Regency::where('province_id', $this->province_id)->get();
+    $this->districts = District::where('regency_id', $this->regency_id)->get();
+    $this->sub_districts = SubDistrict::where('district_id', $this->district_id)->get();
 });
 
 $provinces = computed(function () {
@@ -38,6 +42,7 @@ $citizen_associations = computed(function () {
 $neighborhood_associations = computed(function () {
     return NeighborhoodAssociation::all();
 });
+
 
 updated(['province_id' => function () {
     $this->cities = Regency::where('province_id', $this->province_id)->get();
@@ -60,9 +65,13 @@ on(['close-modal-reset' => function ($wireModels) {
     $this->reset('id');
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
-    $this->cities = [];
-    $this->districts = [];
-    $this->sub_districts = [];
+    $this->province_id = 28;
+    $this->regency_id = 406;
+    $this->district_id = 3527;
+    $this->sub_district_id = 39841;
+    $this->cities = Regency::where('province_id', $this->province_id)->get();
+    $this->districts = District::where('regency_id', $this->regency_id)->get();
+    $this->sub_districts = SubDistrict::where('district_id', $this->district_id)->get();
 },'open-modal' => function () {
     $this->citizen_association_id = auth()->user()->neighborhoodAssociation->citizen->id;
     $this->neighborhood_association_id = auth()->user()->neighborhoodAssociation->id;
@@ -157,7 +166,7 @@ $destroy = function ($id) {
                 'text' => 'Warga'
             ],[
                 'text' => 'Kartu Keluarga',
-                'href' => route('master-data.citizen-association')
+                'href' => route('neighborhood-association.inhabitant')
             ]
         ]">
         <x-slot name="actions">
@@ -255,7 +264,7 @@ $destroy = function ($id) {
                                 <td class="px-6 py-4">
                                     {{ $familyCard->family_card_number }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-nowrap">
                                     {{ $familyCard->head_of_family }}
                                 </td>
                                 <td class="px-6 py-4 text-nowrap">

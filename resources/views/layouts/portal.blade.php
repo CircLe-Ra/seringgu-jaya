@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"  class="scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"  class="scrollbar-thumb-gray-400 scrollbar-track-white scrollbar-thin">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
         <meta name="description" content="SISTEM INFORMASI MANAJEMEN KELURAHAN UNTUK PELAYANAN ADMINISTRASI PENERBITAN SURAT YANG EFISIEN BERBASIS WEB PADA KELURAHAN SERINGGU JAYA KECAMATAN MERAUKE">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ asset('img/site.webmanifest') }}">
+        
+        <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <script>
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -15,7 +20,7 @@
             }
         </script>
     </head>
-    <body class="bg-white dark:bg-gray-800">
+    <body class="bg-white dark:bg-gray-800 ">
         <x-bg-gradient />
         <header>
             <livewire:layout.portal-navigation />

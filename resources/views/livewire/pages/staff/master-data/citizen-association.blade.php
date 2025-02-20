@@ -76,9 +76,6 @@ $destroy = function ($id) {
             [
                 'href' => route('dashboard'),
                 'text' => 'Dashboard'
-            ],
-            [
-                'text' => 'Master Data'
             ],[
                 'text' => 'Rukun Warga (RW)',
                 'href' => route('citizen-association')

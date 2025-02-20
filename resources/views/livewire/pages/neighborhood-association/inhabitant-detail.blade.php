@@ -63,8 +63,11 @@ on(['close-modal-reset' => function ($wireModels) {
 }]);
 
 $familyMembers = computed(function () {
-    return FamilyMember::where('resident_identification_number', 'like', '%' . $this->search . '%')
-        ->orWhere('name', 'like', '%' . $this->search . '%')
+    return FamilyMember::where('family_card_id', $this->family_card_id)
+        ->where(function($query) {
+            $query->where('resident_identification_number', 'like', '%' . $this->search . '%')
+            ->orWhere('name', 'like', '%' . $this->search . '%');
+        })
         ->paginate($this->show, pageName: 'family-member-page');
 });
 
@@ -203,7 +206,7 @@ $store = function () {
                 'text' => 'Warga'
             ],[
                 'text' => 'Kartu Keluarga',
-                'href' => route('master-data.citizen-association')
+                'href' => route('neighborhood-association.inhabitant')
             ]
         ]">
         <x-slot name="actions">
@@ -421,7 +424,7 @@ $store = function () {
                         @endforeach
                     @else
                         <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                            <td class="px-6 py-4 text-center" colspan="11">
+                            <td class="px-6 py-4 text-center" colspan="12">
                                 Tidak ada data
                             </td>
                         </tr>
