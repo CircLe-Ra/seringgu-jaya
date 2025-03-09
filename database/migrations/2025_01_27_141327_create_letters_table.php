@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('letter_type_id')->constrained('letter_types')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('neighborhood_association_id')->constrained('neighborhood_associations')->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('family_member_id')->constrained('family_members')->restrictOnDelete()->cascadeOnUpdate();
-            $table->text('letter_file');
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete()->cascadeOnUpdate();
+            $table->string('letter_number', 100)->unique();
+            $table->text('description');
             $table->text('family_card_file');
             $table->text('resident_identification_card_file');
             $table->text('response_letter_file')->nullable();

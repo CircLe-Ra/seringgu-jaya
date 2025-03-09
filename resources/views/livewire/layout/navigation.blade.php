@@ -82,6 +82,7 @@ $logout = function (Logout $logout) {
     <aside id="sidebar-multi-level-sidebar"  class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 " aria-label="Sidebar">
         <div class="h-full px-3 pb-4 bg-white dark:bg-gray-800 scrollbar-thumb-gray-700 scrollbar-track-white  overflow-y-scroll scrollbar-thin dark:scrollbar-track-gray-800 dark:scrollbar-thumb-gray-500">
             <ul class="space-y-2 font-medium">
+                @role('staff|lurah')
                 <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('dashboard') ? 'bg-gray-200 dark:bg-gray-700' : '' }}" wire:navigate>
                         <svg class="flex-shrink-0 w-5 h-5  text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -92,9 +93,10 @@ $logout = function (Logout $logout) {
                         <span class="ms-3">Dashboard</span>
                     </a>
                 </li>
+                @endrole
                 @role('rt')
                     <li>
-                        <a href="{{ route('neighborhood-association.inhabitant') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('neighborhood-association.inhabitant') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                        <a href="{{ route('neighborhood-association.inhabitant') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('neighborhood-association.inhabitant*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
                             <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16">
                                 <g fill="none">
                                     <path fill="url(#fluentColorPeopleCommunity160)" d="M10.99 7.714a1.5 1.5 0 0 0-1.838 1.061l-.388 1.449a3 3 0 1 0 5.796 1.553l.388-1.45a1.5 1.5 0 0 0-1.06-1.836z" />
@@ -238,6 +240,14 @@ $logout = function (Logout $logout) {
                             <span class="ms-3">Surat Permohonan</span>
                         </a>
                     </li>
+                @endrole
+                @role('lurah|staff')
+                <li>
+                    <a href="{{ route('report') }}" wire:navigate class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group {{ request()->routeIs('report') ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                        <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g fill="none" stroke-linejoin="round" stroke-width="4"><path fill="#3d8cf6" stroke="#1b89bc" d="M5 7C5 5.34315 6.34315 4 8 4H32C33.6569 4 35 5.34315 35 7V44H8C6.34315 44 5 42.6569 5 41V7Z"/><path stroke="#1b89bc" d="M35 24C35 22.8954 35.8954 22 37 22H41C42.1046 22 43 22.8954 43 24V41C43 42.6569 41.6569 44 40 44H35V24Z"/><path stroke="#fff" stroke-linecap="round" d="M11 12H19"/><path stroke="#fff" stroke-linecap="round" d="M11 19H23"/></g></svg>
+                        <span class="ms-3">Laporan</span>
+                    </a>
+                </li>
                 @endrole
             </ul>
 {{--            seprator--}}

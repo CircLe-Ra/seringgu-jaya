@@ -302,5 +302,7 @@ return [
         'family_card_file'         => 'Kartu keluarga',
         'letter_file'              => 'Surat',
         'letter_type_id'           => 'Jenis surat',
+        'start_date'               => 'Tanggal mulai',
+        'end_date'                 => 'Tanggal selesai'
     ],
 ];

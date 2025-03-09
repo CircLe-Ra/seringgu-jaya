@@ -21,4 +21,8 @@ class Letter extends Model
         return $this->belongsTo(FamilyMember::class);
     }
 
+    public function neighborhood(){
+        return $this->belongsTo(NeighborhoodAssociation::class, 'neighborhood_association_id');
+    }
+
 }

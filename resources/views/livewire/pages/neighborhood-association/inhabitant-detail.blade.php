@@ -20,8 +20,8 @@ state(['show' => 5, 'search' => ''])->url();
 state(['family_card_id' => fn($id) => $id])->locked();
 state(['id','family_card_number','head_of_family','province','regency','district','sub_district','citizen_association','neighborhood_association','address','postal_code']);
 state(['resident_identification_number', 'name', 'gender', 'birth_place', 'birth_date', 'religion_id', 'education_id', 'employment_id', 'blood_group_id','user_id','email','password','password_confirmation']);
-state(['position'=> 'familiar']);
-state(['letter_type_id','letter_file', 'family_card_file', 'resident_identification_card_file', 'family_member_id']);
+state(['position'=> 'familiar', 'description' => 'untuk ']);
+state(['letter_type_id','family_card_file', 'resident_identification_card_file', 'family_member_id', 'letter_number']);
 
 mount(function () {
     if(auth()->user()->roles()->get()->first()->name != 'rt'){
@@ -60,6 +60,7 @@ on(['close-modal-reset' => function ($wireModels) {
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
     $this->position = 'familiar';
+    $this->description = 'untuk ';
 }]);
 
 $familyMembers = computed(function () {
@@ -162,27 +163,28 @@ $resetAccount = function ($id) {
     $this->dispatch('open-modal', id: 'family-member-account-modal');
 };
 
-$createLetter = function ($id) {
+$createLetter = function ($id, $user_id) {
     $this->family_member_id = $id;
+    $this->user_id = $user_id;
     $this->dispatch('open-modal', id: 'upload-letter-modal');
 };
 
 $store = function () {
     $validate = $this->validate([
         'letter_type_id' => 'required',
-        'letter_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        'letter_number' => 'required',
+        'description' => 'required',
         'family_card_file' => 'required|mimes:pdf,png,jpg,jpeg|max:2048',
         'resident_identification_card_file' => 'required|mimes:pdf,png,jpg,jpeg|max:2048',
     ]);
     try {
-        $letter_file = $this->letter_file->store('letters');
         $family_card_file = $this->family_card_file->store('letters');
         $resident_identification_card_file = $this->resident_identification_card_file->store('letters');
-        $validate['letter_file'] = $letter_file;
         $validate['family_card_file'] = $family_card_file;
         $validate['resident_identification_card_file'] = $resident_identification_card_file;
         $validate['neighborhood_association_id'] = auth()->user()->neighborhoodAssociation->id;
         $validate['family_member_id'] = $this->family_member_id;
+        $validate['user_id'] = $this->user_id;
         $letter = \App\Models\Letter::updateOrCreate(['id' => $this->id], $validate);
         $this->dispatch('close-modal', id: 'upload-letter-modal');
         Toaster::success('Surat berhasil ditambahkan');
@@ -190,7 +192,7 @@ $store = function () {
     } catch (Exception $e) {
         $this->dispatch('close-modal', id: 'upload-letter-modal');
         Toaster::error('Surat gagal ditambahkan');
-        Toaster::error($e->getMessage());
+        dd($e->getMessage());
     }
 };
 
@@ -231,19 +233,9 @@ $store = function () {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Buat Surat</h5>
         </x-slot>
         <x-slot name="content">
-            <div x-data="{ show : @entangle('edit') }" class="mt-3">
-                <x-ui.alert x-show="show"
-                            x-cloak
-                            x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 scale-90"
-                            x-transition:enter-end="opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-300"
-                            x-transition:leave-start="opacity-100 scale-100"
-                            x-transition:leave-end="opacity-0 scale-90"
-                            color="warning" value="Data sudah diunggah sebelumnya. Jika Anda ingin melakukan perubahan, Anda dapat langsung mengunggah file yang baru. File lama akan ditimpa dengan file yang baru." />
-            </div>
             <x-ui.input-select server :data="$this->letter_types" label="Jenis Surat" wire:model="letter_type_id" id="letter_type_id" />
-            <x-ui.filepond id="letter_file" wire:model="letter_file" label="Surat" />
+            <x-ui.input type="text" label="Nomor Surat" wire:model="letter_number" id="number" />
+            <x-ui.textarea label="Keterangan" wire:model="description" id="description" />
             <x-ui.filepond id="family_card_file" wire:model="family_card_file" label="Kartu Keluarga" />
             <x-ui.filepond id="resident_identification_card_file" wire:model="resident_identification_card_file" label="Kartu Tanda Penduduk" />
         </x-slot>
@@ -402,7 +394,7 @@ $store = function () {
                                     {{ $familyMember->blood_group->name }}
                                 </td>
                                 <td class="px-6 py-4 ">
-                                    <x-ui.button class="w-24 mb-1 text-nowrap" size="xs" color="green" wire:click="createLetter({{ $familyMember->id }})" >
+                                    <x-ui.button class="w-24 mb-1 text-nowrap" size="xs" color="green" wire:click="createLetter({{ $familyMember->id }}, {{ $familyMember->user_id }})" >
                                         <svg class="w-3 h-3 me-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M9.944 3.25h4.112c1.838 0 3.294 0 4.433.153c1.172.158 2.121.49 2.87 1.238c.748.749 1.08 1.698 1.238 2.87c.153 1.14.153 2.595.153 4.433v.112c0 1.838 0 3.294-.153 4.433c-.158 1.172-.49 2.121-1.238 2.87c-.749.748-1.698 1.08-2.87 1.238c-1.14.153-2.595.153-4.433.153H9.944c-1.838 0-3.294 0-4.433-.153c-1.172-.158-2.121-.49-2.87-1.238c-.748-.749-1.08-1.698-1.238-2.87c-.153-1.14-.153-2.595-.153-4.433v-.112c0-1.838 0-3.294.153-4.433c.158-1.172.49-2.121 1.238-2.87c.749-.748 1.698-1.08 2.87-1.238c1.14-.153 2.595-.153 4.433-.153M5.71 4.89c-1.006.135-1.586.389-2.01.812c-.422.423-.676 1.003-.811 2.009c-.138 1.028-.14 2.382-.14 4.289s.002 3.262.14 4.29c.135 1.005.389 1.585.812 2.008s1.003.677 2.009.812c1.028.138 2.382.14 4.289.14h4c1.907 0 3.262-.002 4.29-.14c1.005-.135 1.585-.389 2.008-.812s.677-1.003.812-2.009c.138-1.028.14-2.382.14-4.289s-.002-3.261-.14-4.29c-.135-1.005-.389-1.585-.812-2.008s-1.003-.677-2.009-.812c-1.027-.138-2.382-.14-4.289-.14h-4c-1.907 0-3.261.002-4.29.14m-.287 2.63a.75.75 0 0 1 1.056-.096L8.64 9.223c.933.777 1.58 1.315 2.128 1.667c.529.34.888.455 1.233.455s.704-.114 1.233-.455c.547-.352 1.195-.89 2.128-1.667l2.159-1.8a.75.75 0 1 1 .96 1.153l-2.196 1.83c-.887.74-1.605 1.338-2.24 1.746c-.66.425-1.303.693-2.044.693s-1.384-.269-2.045-.693c-.634-.408-1.352-1.007-2.239-1.745L5.52 8.577a.75.75 0 0 1-.096-1.057" clip-rule="evenodd"/></svg>
                                         Buat Surat
                                     </x-ui.button>

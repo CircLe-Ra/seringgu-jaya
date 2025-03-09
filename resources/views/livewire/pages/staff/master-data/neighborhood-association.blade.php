@@ -196,10 +196,10 @@ $destroy = function ($id) {
             <h5 class="text-xl font-medium text-gray-900 dark:text-white">Reset Akun Ketua (RT)</h5>
         </x-slot>
         <x-slot name="content">
-            <x-ui.input type="email" label="Email" wire:model="email" id="email"/>
+            <x-ui.input type="email" label="Email" wire:model="email" id="email-neighbor"/>
             <div class="grid-cols-1 sm:grid-cols-2 grid gap-2 my-2">
-                <x-ui.input type="password" label="Password" wire:model="password" id="password"/>
-                <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation"/>
+                <x-ui.input type="password" label="Password" wire:model="password" id="password-neighbor"/>
+                <x-ui.input type="password" label="Konfirmasi Password" wire:model="password_confirmation" id="password_confirmation-neighbor"/>
             </div>
         </x-slot>
         <x-slot name="footer">

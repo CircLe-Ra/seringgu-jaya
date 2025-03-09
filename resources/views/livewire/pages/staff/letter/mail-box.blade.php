@@ -15,6 +15,7 @@ title('Surat Masuk');
 usesFileUploads();
 state(['show' => 5, 'search' => ''])->url();
 state(['id', 'response_letter_file']);
+state(['name', 'gender', 'birth_place', 'birth_date', 'religion', 'employment','resident_identification_number', 'address', 'letter_number', 'description', 'letter_type', 'create_date', 'citizen', 'neighborhood']);
 state(['edit' => false]);
 
 mount(function () {
@@ -28,6 +29,27 @@ on(['close-modal-reset' => function ($wireModels) {
     $this->reset($wireModels);
     $this->resetErrorBag($wireModels);
     $this->edit = false;
+}, 'open-modal-loading' => function ($id) {
+    $letter = Letter::find($id);
+    if ($letter) {
+        $this->letter_type = $letter->letter_type->name;
+        $this->letter_number = $letter->letter_number;
+        $this->description = $letter->description;
+        $this->citizen = $letter->neighborhood->citizen;
+        $this->neighborhood = $letter->neighborhood;
+        $this->name =$letter->family_member->name;
+        $this->gender = $letter->family_member->gender;
+        $this->birth_place = $letter->family_member->birth_place;
+        $this->birth_date = $letter->family_member->birth_date;
+        $this->religion = $letter->family_member->religion->name;
+        $this->employment = $letter->family_member->employment->name;
+        $this->resident_identification_number = $letter->family_member->resident_identification_number;
+        $this->address = $letter->family_member->family_card->address;
+        $this->create_date = $letter->created_at;
+        $this->dispatch('modal-loading-done', id: 'letter-modal');
+    }else{
+        Toaster::error('Surat tidak ditemukan');
+    }
 }]);
 
 $letters = computed(function () {
@@ -147,6 +169,167 @@ $reply = function ($id) {
                          wire:loading.class="cursor-not-allowed" wire:target="store" wire:click="store"/>
         </x-slot>
     </x-ui.modal>
+    <x-ui.modal id="letter-modal" size="xl">
+        <x-slot name="header">
+            <h5 class="text-xl font-medium text-gray-900 dark:text-white">Surat yang diajukan</h5>
+        </x-slot>
+        <x-slot name="content">
+            <div id="print-area">
+                <div class="bg-white p-5">
+                    <table class="border-collapse w-full">
+                        <tbody>
+                        <tr>
+                            <th class="flex justify-end items-center">
+                                <img class="w-20 mt-1" src="{{ asset('img/logo.png') }}" alt="Surat">
+                            </th>
+                            <th class="">
+                                <h5 class="text-2xl font-bold text-gray-900 tracking-[.09em]">PEMERINTAH DISTRIK MERAUKE</h5>
+                                <h5 class="text-2xl font-bold text-gray-900 tracking-[.09em]">KELURAHAN SERINGGU JAYA</h5>
+                                <h5 class="text-2xl font-bold text-gray-900 tracking-[.09em]">{{ $this->neighborhood->position ?? '' }}/{{ $this->citizen->position ?? '' }}</h5>
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <hr class="mt-3 border-gray-200 dark:border-gray-700" />
+                    <hr class="mt-1 mb-6 border-gray-200 border-2 dark:border-gray-700" />
+                    <table class="border-collapse w-full mb-5">
+                        <tbody>
+                        <tr>
+                            <td class="text-start">
+                                <h5 class="text-xl font-bold text-gray-900 tracking-[.09em] underline">SURAT PENGANTAR</h5>
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900 tracking-[.09em] ">Yth. Lurah Seringgu Jaya</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                <h5 class="text-lg font-medium text-gray-900 tracking-[.09em] ">Nomor : {{ $this->letter_number }}</h5>
+                            </td>
+                            <td class="">
+                                <h5 class="text-lg font-medium text-gray-900 tracking-[.09em] ml-32">di -</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">
+                                &nbsp;
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900 tracking-[.09em] underline">Merauke</h5>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="mb-5">
+                        <p class="text-start text-lg text-gray-900">
+                            Dengan hormat,
+                        </p>
+                        <p class="indent-8 text-lg text-gray-900">
+                            Kami yang bertanda tangan di bawah ini menerangkan bahwa :
+                        </p>
+                    </div>
+                    <table class="w-full border-collapse text-lg text-gray-900 mb-5">
+                        <tr>
+                            <td class="py-2 w-1/3">Nama Lengkap</td>
+                            <td class="w-8 text-center">:</td>
+                            <td class=" w-2/3"> {{ $this->name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Jenis Kelamin</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{ $this->gender == 'M' ? 'Laki-Laki' : 'Perempuan' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Tempat Tanggal Lahir</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{ $this->birth_place }},{{ Carbon::parse($this->birth_date)->locale('id')->isoFormat('D MMMM Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Agama</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{ $this->religion }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Pekerjaan</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{ $this->employment }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Nomor KTP</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{  $this->resident_identification_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Alamat</td>
+                            <td class="text-center">:</td>
+                            <td class=""> {{ $this->address }}</td>
+                        </tr>
+                    </table>
+                    <div class="mb-8">
+                        <p class="indent-8 text-lg text-gray-900">
+                            Yang bersangkutan adalah benar-benar warga kami yang berdomisili sesuai alamat diatas, dan bermaksud mengurus <strong>{{ $this->letter_type }}</strong> {{ $this->description }}
+                        </p>
+                        <p class="indent-8 text-lg text-gray-900 mt-2">
+                            Demikian atas kerja samanya kami ucapkan terima kasih.
+                        </p>
+                    </div>
+                    <table class="border-collapse w-full mb-5">
+                        <tbody>
+                        <tr>
+                            <td class="text-start">
+                                <h5 class="text-xl font-bold text-gray-900 tracking-[.09em]">&nbsp;</h5>
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900">Merauke, {{ Carbon::parse($this->create_date)->locale('id')->isoFormat('D MMMM Y') }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900">Mengatahui,</h5>
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900">&nbsp;</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900">KETUA {{ $this->citizen->position ?? '' }}</h5>
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900">KETUA {{  $this->neighborhood->position ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                &nbsp;
+                                <br />
+                                &nbsp;
+                            </td>
+                            <td class="text-center">
+                                &nbsp;
+                                <br />
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900 underline tracking-[.09em]">{{ $this->citizen->name ?? '' }}</h5>
+                            </td>
+                            <td class="text-center">
+                                <h5 class="text-lg font-medium text-gray-900 tracking-[.09em] underline">{{  $this->neighborhood->name ?? '' }}</h5>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </x-slot>
+        <x-slot name="footer">
+            <x-ui.button size="sm" reset color="light" class="mr-2" wire:click="$dispatch('close-modal', { id: 'letter-modal' })" title="Tutup"/>
+            <x-ui.button size="sm" title="Cetak" color="blue" wire:click="dispatch('print')" />
+        </x-slot>
+    </x-ui.modal>
+
     <div class="grid-cols-1 lg:grid-cols-3 grid gap-2 ">
         <div class="col-span-3 ">
             <x-ui.card class="mt-2 w-full ">
@@ -180,21 +363,14 @@ $reply = function ($id) {
                                     {{ $letter->letter_type->name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if($letter->letter_file != null)
-                                        <a href="/storage/{{ $letter->letter_file }}" target="_blank"
-                                           class="underline text-grey-200 dark:hover:text-white hover:text-gray-300">
-                                            <svg class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
-                                                 width="24" height="24" viewBox="0 0 24 24">
-                                                <path fill="currentColor" fill-rule="evenodd"
-                                                      d="M14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14v-4c0-3.771 0-5.657 1.172-6.828S6.239 2 10.03 2c.606 0 1.091 0 1.5.017q-.02.12-.02.244l-.01 2.834c0 1.097 0 2.067.105 2.848c.114.847.375 1.694 1.067 2.386c.69.69 1.538.952 2.385 1.066c.781.105 1.751.105 2.848.105h4.052c.043.534.043 1.19.043 2.063V14c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22"
-                                                      clip-rule="evenodd" opacity="0.45"/>
-                                                <path fill="currentColor"
-                                                      d="m11.51 2.26l-.01 2.835c0 1.097 0 2.066.105 2.848c.114.847.375 1.694 1.067 2.385c.69.691 1.538.953 2.385 1.067c.781.105 1.751.105 2.848.105h4.052q.02.232.028.5H22c0-.268 0-.402-.01-.56a5.3 5.3 0 0 0-.958-2.641c-.094-.128-.158-.204-.285-.357C19.954 7.494 18.91 6.312 18 5.5c-.81-.724-1.921-1.515-2.89-2.161c-.832-.556-1.248-.834-1.819-1.04a6 6 0 0 0-.506-.154c-.384-.095-.758-.128-1.285-.14z"/>
-                                            </svg>
-                                        </a>
-                                    @else
-                                        -
-                                    @endif
+                                    <svg wire:click="$dispatch('open-modal-loading', { id : {{  $letter->id }} })" class="w-10 h-10 object-cover" xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="currentColor" fill-rule="evenodd"
+                                              d="M14 22h-4c-3.771 0-5.657 0-6.828-1.172S2 17.771 2 14v-4c0-3.771 0-5.657 1.172-6.828S6.239 2 10.03 2c.606 0 1.091 0 1.5.017q-.02.12-.02.244l-.01 2.834c0 1.097 0 2.067.105 2.848c.114.847.375 1.694 1.067 2.386c.69.69 1.538.952 2.385 1.066c.781.105 1.751.105 2.848.105h4.052c.043.534.043 1.19.043 2.063V14c0 3.771 0 5.657-1.172 6.828S17.771 22 14 22"
+                                              clip-rule="evenodd" opacity="0.45"/>
+                                        <path fill="currentColor"
+                                              d="m11.51 2.26l-.01 2.835c0 1.097 0 2.066.105 2.848c.114.847.375 1.694 1.067 2.385c.69.691 1.538.953 2.385 1.067c.781.105 1.751.105 2.848.105h4.052q.02.232.028.5H22c0-.268 0-.402-.01-.56a5.3 5.3 0 0 0-.958-2.641c-.094-.128-.158-.204-.285-.357C19.954 7.494 18.91 6.312 18 5.5c-.81-.724-1.921-1.515-2.89-2.161c-.832-.556-1.248-.834-1.819-1.04a6 6 0 0 0-.506-.154c-.384-.095-.758-.128-1.285-.14z"/>
+                                    </svg>
                                 </td>
                                 <td class="px-6 py-4">
                                     @if($letter->family_card_file != null)
@@ -273,6 +449,18 @@ $reply = function ($id) {
             </x-ui.card>
         </div>
     </div>
+    @pushonce('scripts-bottom')
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                Livewire.on('print', () => {
+                    let printContents = document.getElementById('print-area').innerHTML;
+                    document.body.innerHTML = printContents;
+                    window.print();
+                    window.location.reload();
+                });
+            }, { once: true });
+        </script>
+    @endpushonce
 </div>
 
 

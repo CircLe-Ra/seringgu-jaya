@@ -21,4 +21,13 @@ class NeighborhoodAssociation extends Model
     {
         return $this->hasMany(FamilyCard::class);
     }
+
+    public function family_members()
+    {
+        return $this->hasMany(FamilyMember::class);
+    }
+
+    public function letters(){
+        return $this->hasMany(Letter::class);
+    }
 }

@@ -33,7 +33,11 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('citizen/information', 'pages.citizen.information')->name('citizen.information');
     Volt::route('citizen/mail-box', 'pages.citizen.mail-box')->name('citizen.mail-box');
 
+    //leader
+    Volt::route('report', 'pages.leader.report')->name('report');
+
     Volt::route('notification', 'pages.notification')->name('notification');
+
 });
 
 require __DIR__.'/auth.php';
