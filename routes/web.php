@@ -8,6 +8,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('profile', 'profile')->name('profile');
 
     //staff
+    Volt::route('dashboard', 'pages.staff.dashboard')->name('staff.dashboard');
     //master-data
     Volt::route('master-data/education', 'pages.staff.master-data.education')->name('master-data.education');
     Volt::route('master-data/religion', 'pages.staff.master-data.religion')->name('master-data.religion');

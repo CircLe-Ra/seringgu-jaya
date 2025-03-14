@@ -58,6 +58,7 @@ $showCategory = function ($id) {
                             @endforeach
                         @endif
                     </div>
+                    @if($this->manyNews->count() >= 1)
                     <a href="{{ route('portal.read-news', ['slug' => $this->oneNews->slug]) }}" wire:navigate class="hover:underline text-2xl font-bold text-gray-900 dark:text-white text-justify"> {!! Str::of($this->oneNews->title ?? '')->limit(60) !!}</a>
                     <div class="flex items-center py-4 text-gray-900 whitespace-nowrap dark:text-white">
                         @if ($this->oneNews->user->profile_path ?? false)
@@ -78,6 +79,7 @@ $showCategory = function ($id) {
                             <svg aria-hidden="true" class="w-4 h-4 -mt-1 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </a>
                     </div>
+                    @endif
                 </div>
                 <div>
                     @foreach($this->manyNews as $news)
