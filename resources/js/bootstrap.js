@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { Modal, Dismiss } from 'flowbite';
 import { Datepicker } from 'flowbite';
+import ApexCharts from 'apexcharts'
 
+window.ApexCharts = ApexCharts;
 window.Modal = Modal;
 window.Dismiss = Dismiss;
 window.Datepicker = Datepicker;
