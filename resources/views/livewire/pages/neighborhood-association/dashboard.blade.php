@@ -18,7 +18,9 @@ mount(function () {
     $this->religion = $religion->map(function ($religion) {
         return [
             'name' => $religion->name,
-            'data' => $religion->family_members->count()
+            'data' => $religion->family_members()->whereHas('family_card', function ($query) {
+                $query->where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id);
+            })->count(),
         ];
     })->reduce(function ($carry, $item) {
         $carry['label'][] = $item['name'];
@@ -26,25 +28,28 @@ mount(function () {
         return $carry;
     }, ['label' => [], 'data' => []]);
 
-    $neighborhoodAssociations = NeighborhoodAssociation::orderBy('position')->get();
+    $neighborhoodAssociationId = auth()->user()->neighborhoodAssociation->id;
+
     $this->employment = [
-        'categories' => $neighborhoodAssociations->pluck('position'),
-        'series' => Employment::all()->map(function ($employment) use ($neighborhoodAssociations) {
-            return [
-                'name' => $employment->name,
-                'data' => $neighborhoodAssociations->map(function ($rt) use ($employment) {
-                    return FamilyMember::whereHas('family_card', function ($query) use ($rt) {
-                        $query->where('neighborhood_association_id', $rt->id);
-                    })->where('employment_id', $employment->id)->count();
-                })
-            ];
-        })
+        'series' => [
+            [
+                'data' => Employment::withCount([
+                    'family_members' => function($query) use ($neighborhoodAssociationId) {
+                        $query->whereHas('family_card', function($q) use ($neighborhoodAssociationId) {
+                            $q->where('neighborhood_association_id', $neighborhoodAssociationId);
+                        });
+                    }
+                ])->get()->pluck('family_members_count')->toArray()
+            ]
+        ],
+        'categories' => Employment::all()->pluck('name')->toArray()
     ];
 
-    $this->citizen_association = CitizenAssociation::count();
-    $this->neighborhood_association = NeighborhoodAssociation::count();
-    $this->family_card = FamilyCard::count();
-    $this->people = FamilyMember::count();
+
+    $this->family_card = FamilyCard::where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id)->count();
+    $this->people = FamilyMember::whereHas('family_card', function ($query){
+        $query->where('neighborhood_association_id', auth()->user()->neighborhoodAssociation->id);
+    })->count();
 });
 
 ?>
@@ -57,17 +62,7 @@ mount(function () {
             <h1 class="text-xl py-[3.5px] font-medium text-gray-900 dark:text-white">Halo, {{ auth()->user()->name }} - {{ Carbon::parse(date('Y-m-d'))->locale('id')->isoFormat('D MMMM Y') }}</h1>
         </x-slot>
     </x-ui.breadcrumbs>
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2 mt-2">
-        <div class="h-64 col-span-1 p-6 border text-gray-600 dark:text-white border-gray-200 dark:bg-gray-700 dark:border-gray-800 bg-white rounded-lg">
-            <span class="items-start font-bold text-xl">Total Rukur Warga</span>
-            <h1 class="items-end font-bold text-7xl text-center my-8">{{ $this->citizen_association }}</h1>
-            <h1 class="items-end font-bold text-2xl text-center">RW</h1>
-        </div>
-        <div class="h-64 col-span-1 p-6 border text-gray-600 dark:text-white border-gray-200 dark:bg-gray-700 dark:border-gray-800 bg-white rounded-lg">
-            <span class="items-start font-bold text-xl">Total Rukun Tetangga</span>
-            <h1 class="items-end font-bold text-7xl text-center my-8">{{ $this->neighborhood_association }}</h1>
-            <h1 class="items-end font-bold text-2xl text-center">RT</h1>
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-2 mt-2">
         <div class="h-64 col-span-1 p-6 border text-gray-600 dark:text-white border-gray-200 dark:bg-gray-700 dark:border-gray-800 bg-white rounded-lg">
             <span class="items-start font-bold text-xl">Total Kepala Keluarga</span>
             <h1 class="items-end font-bold text-7xl text-center my-8">{{ $this->family_card }}</h1>
@@ -110,63 +105,55 @@ mount(function () {
                     window.matchMedia('(prefers-color-scheme: dark)').matches);
 
             var emplymentChartOption = {
-                series: @js($this->employment['series']),
+                series: @js($this->employment['series'] ?? []),
                 chart: {
                     type: 'bar',
                     height: 650,
                     stacked: true,
+                    toolbar: { show: false }
                 },
                 plotOptions: {
                     bar: {
-                        horizontal: true,
-                        barHeight: '90%', // Tinggi bar (persentase dari total tinggi)
-                        columnWidth: '50%', // Lebar bar (untuk chart vertikal)
-                        borderRadius: 4, // Sudut lengkung bar
-                        dataLabels: {
-                            total: {
-                                enabled: true,
-                                offsetX: 0,
-                                style: {
-                                    fontSize: '13px',
-                                    fontWeight: 900
-                                }
-                            },
-                            position: 'center', // Posisi label di tengah bar
-                            hideOverflowingLabels: false // Pastikan label tetap muncul
-                        }
-                    },
+                        columnWidth: '45%',
+                        distributed: true,
+                    }
                 },
                 stroke: {
                     width: 1,
                     colors: ['#fff']
                 },
                 title: {
-                    text: 'Grafik Jumlah Jiwa Berdasarkan Pekerjaan Setiap RT',
+                    text: 'Grafik Jumlah Jiwa Berdasarkan Pekerjaan Setiap ' + @js(auth()->user()->neighborhoodAssociation->position ?? 'RT'),
+                    style: {
+                        fontSize: '16px',
+                        fontWeight: 'bold'
+                    }
                 },
                 xaxis: {
-                    categories: @js($this->employment['categories']),
+                    categories: @js($this->employment['categories'] ?? []),
                     labels: {
-                        formatter: function (val) {
-                            return val + " Jiwa"
-                        }
-                    },
-                    tickAmount: 8
-                },
-                yaxis: {
-                    title: {
-                        text: undefined
-                    },
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return val + " Jiwa"
+                        formatter: function(val) {
+                            return val;
                         }
                     }
                 },
-                fill: {
-                    opacity: 1
+                yaxis: {
+                    title: { text: undefined },
+                    tickAmount: 3,
+                    labels: {
+                        formatter: function(val) {
+                            return Math.round(val);
+                        }
+                    }
                 },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " Jiwa";
+                        }
+                    }
+                },
+                fill: { opacity: 1 },
                 legend: {
                     position: 'top',
                     horizontalAlign: 'left',
@@ -174,33 +161,26 @@ mount(function () {
                 }
             };
 
-            var emplymentChart = new ApexCharts(document.querySelector("#emplymentChart"), { ...emplymentChartOption, ...(isDarkMode ? darkTheme : lightTheme) });
-            emplymentChart.render();
-
             var religionChartOption = {
+                series: @js($this->religion['data'] ?? []),
+                chart: {
+                    width: 340,
+                    type: 'pie',
+                },
+                labels: @js($this->religion['label'] ?? []),
                 title: {
                     text: 'Total Warga Per Agama',
-                    offsetY: 0,
+                    align: 'center',
                     style: {
                         fontSize: '16px',
                         fontWeight: 'bold'
                     }
                 },
-                series: @js($this->religion['data']),
-                chart: {
-                    width: 340,
-                    type: 'pie',
-                },
-                labels: @js($this->religion['label']),
                 responsive: [{
                     breakpoint: 480,
                     options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
+                        chart: { width: 200 },
+                        legend: { position: 'bottom' }
                     }
                 }],
                 legend: {
@@ -217,10 +197,19 @@ mount(function () {
                         horizontal: 10,
                         vertical: 5
                     }
-                },
+                }
             };
 
-            var religionChart = new ApexCharts(document.querySelector("#religionChart"), { ...religionChartOption, ...(isDarkMode ? darkTheme : lightTheme) });
+            var emplymentChart = new ApexCharts(
+                document.querySelector("#emplymentChart"),
+                { ...emplymentChartOption, ...(isDarkMode ? darkTheme : lightTheme) }
+            );
+            emplymentChart.render();
+
+            var religionChart = new ApexCharts(
+                document.querySelector("#religionChart"),
+                { ...religionChartOption, ...(isDarkMode ? darkTheme : lightTheme) }
+            );
             religionChart.render();
 
             document.getElementById('theme-toggle')?.addEventListener('click', function() {

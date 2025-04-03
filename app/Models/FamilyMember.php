@@ -43,8 +43,4 @@ class FamilyMember extends Model
         return $this->belongsTo(FamilyCard::class);
     }
 
-    public function neighborhood()
-    {
-        return $this->belongsTo(NeighborhoodAssociation::class, 'neighborhood_association_id');
-    }
 }

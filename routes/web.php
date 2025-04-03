@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 //    Volt::route('master-data/role', 'pages.staff.master-data.role')->name('master-data.role');
 
     //RT
+    Volt::route('neighborhood-association/dashboard', 'pages.neighborhood-association.dashboard')->name('neighborhood-association.dashboard');
     Volt::route('neighborhood-association/inhabitant', 'pages.neighborhood-association.inhabitant')->name('neighborhood-association.inhabitant');
     Volt::route('neighborhood-association/inhabitant-detail/{id}', 'pages.neighborhood-association.inhabitant-detail')->name('neighborhood-association.inhabitant-detail');
     Volt::route('neighborhood-association/letter', 'pages.neighborhood-association.letter')->name('neighborhood-association.letter');
