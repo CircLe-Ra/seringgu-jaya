@@ -8,7 +8,7 @@ Route::get('/', function () {
         return redirect()->route('login');
     }
     if(Auth::user()->roles()->first()->name == 'staff' || Auth::user()->roles()->first()->name == 'lurah'){
-        return redirect()->route('staff.dashboard');
+        return redirect()->route('dashboard');
     }else if(Auth::user()->roles()->first()->name == 'rt'){
         return redirect()->route('neighborhood-association.dashboard');
     }else if(Auth::user()->roles()->first()->name == 'warga'){
@@ -17,11 +17,10 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-
     Route::view('profile', 'profile')->name('profile');
     //staff
     Route::middleware(['role:staff'])->group(function () {
-        Volt::route('staff/dashboard', 'pages.staff.dashboard')->name('staff.dashboard');
+        Volt::route('staff/dashboard', 'pages.staff.dashboard')->name('dashboard');
         //master-data
         Volt::route('master-data/education', 'pages.staff.master-data.education')->name('master-data.education');
         Volt::route('master-data/religion', 'pages.staff.master-data.religion')->name('master-data.religion');
