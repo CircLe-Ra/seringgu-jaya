@@ -78,10 +78,6 @@ $familyMembers = computed(function () {
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </x-ui.input-select>
-                        <x-ui.button wire:click="$dispatch('open-modal', { id :'family-member-modal'})" size="xs" color="blue">
-                            <span class="iconify duo-icons--add-circle w-4 h-4 me-1"></span>
-                            Tambah Anggota
-                        </x-ui.button>
                     </div>
                 </x-slot>
 

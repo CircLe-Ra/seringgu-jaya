@@ -91,142 +91,201 @@ mount(function () {
 @pushonce('scripts-bottom')
     <script>
         document.addEventListener('livewire:navigated', () => {
+            // Deklarasi tema
             const lightTheme = {
                 theme: {
                     mode: 'light',
-                    palette: 'palette1'
+                    palette: 'palette1',
                 }
             };
 
             const darkTheme = {
                 theme: {
                     mode: 'dark',
-                    palette: 'palette1'
+                    palette: 'palette1',
                 }
             };
 
+            // Cek status dark mode
             let isDarkMode = localStorage.getItem('color-theme') === 'dark' ||
                 (!('color-theme' in localStorage) &&
                     window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-            var emplymentChartOption = {
-                series: @js($this->employment['series']),
-                chart: {
-                    type: 'bar',
-                    height: 650,
-                    stacked: true,
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: true,
-                        barHeight: '90%', // Tinggi bar (persentase dari total tinggi)
-                        columnWidth: '50%', // Lebar bar (untuk chart vertikal)
-                        borderRadius: 4, // Sudut lengkung bar
-                        dataLabels: {
-                            total: {
-                                enabled: true,
-                                offsetX: 0,
-                                style: {
-                                    fontSize: '13px',
-                                    fontWeight: 900
-                                }
-                            },
-                            position: 'center', // Posisi label di tengah bar
-                            hideOverflowingLabels: false // Pastikan label tetap muncul
-                        }
-                    },
-                },
-                stroke: {
-                    width: 1,
-                    colors: ['#fff']
-                },
-                title: {
-                    text: 'Grafik Jumlah Jiwa Berdasarkan Pekerjaan Setiap RT',
-                },
-                xaxis: {
-                    categories: @js($this->employment['categories']),
-                    labels: {
-                        formatter: function (val) {
-                            return val + " Jiwa"
-                        }
-                    },
-                    tickAmount: 8
-                },
-                yaxis: {
-                    title: {
-                        text: undefined
-                    },
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return val + " Jiwa"
-                        }
-                    }
-                },
-                fill: {
-                    opacity: 1
-                },
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'left',
-                    offsetX: 40
+            // Inisialisasi chart
+            let emplymentChart, religionChart;
+
+            function initCharts() {
+                // Hancurkan chart sebelumnya jika ada
+                if (emplymentChart) {
+                    emplymentChart.destroy();
                 }
-            };
+                if (religionChart) {
+                    religionChart.destroy();
+                }
 
-            var emplymentChart = new ApexCharts(document.querySelector("#emplymentChart"), { ...emplymentChartOption, ...(isDarkMode ? darkTheme : lightTheme) });
-            emplymentChart.render();
-
-            var religionChartOption = {
-                title: {
-                    text: 'Total Warga Per Agama',
-                    offsetY: 0,
-                    style: {
-                        fontSize: '16px',
-                        fontWeight: 'bold'
-                    }
-                },
-                series: @js($this->religion['data']),
-                chart: {
-                    width: 340,
-                    type: 'pie',
-                },
-                labels: @js($this->religion['label']),
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }],
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'left',
-                    fontSize: '14px',
-                    offsetY: 20,
-                    markers: {
-                        width: 12,
-                        height: 12,
-                        radius: 12,
+                // Options chart
+                const emplymentChartOption = {
+                    series: @js($this->employment['series']),
+                    chart: {
+                        type: 'bar',
+                        height: 650,
+                        stacked: true,
                     },
-                    itemMargin: {
-                        horizontal: 10,
-                        vertical: 5
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            barHeight: '90%',
+                            columnWidth: '50%',
+                            borderRadius: 4,
+                            dataLabels: {
+                                total: {
+                                    enabled: true,
+                                    offsetX: 0,
+                                    style: {
+                                        fontSize: '13px',
+                                        fontWeight: 900
+                                    }
+                                },
+                                position: 'center',
+                                hideOverflowingLabels: false
+                            }
+                        },
+                    },
+                    stroke: {
+                        width: 1,
+                        colors: ['#fff']
+                    },
+                    title: {
+                        text: 'Grafik Jumlah Jiwa Berdasarkan Pekerjaan Setiap RT',
+                    },
+                    xaxis: {
+                        categories: @js($this->employment['categories']),
+                        labels: {
+                            formatter: function (val) {
+                                return val + " Jiwa"
+                            }
+                        },
+                        tickAmount: 8
+                    },
+                    yaxis: {
+                        title: {
+                            text: undefined
+                        },
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: function (val) {
+                                return val + " Jiwa"
+                            }
+                        }
+                    },
+                    fill: {
+                        opacity: 1
+                    },
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        offsetX: 40
                     }
-                },
-            };
+                };
 
-            var religionChart = new ApexCharts(document.querySelector("#religionChart"), { ...religionChartOption, ...(isDarkMode ? darkTheme : lightTheme) });
-            religionChart.render();
+                const religionChartOption = {
+                    title: {
+                        text: 'Total Warga Per Agama',
+                        offsetY: 0,
+                        style: {
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    series: @js($this->religion['data']),
+                    chart: {
+                        width: 340,
+                        type: 'pie',
+                    },
+                    labels: @js($this->religion['label']),
+                    responsive: [{
+                        breakpoint: 480,
+                        options: {
+                            chart: {
+                                width: 200
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }],
+                    legend: {
+                        position: 'top',
+                        horizontalAlign: 'left',
+                        fontSize: '14px',
+                        offsetY: 20,
+                        markers: {
+                            width: 12,
+                            height: 12,
+                            radius: 12,
+                        },
+                        itemMargin: {
+                            horizontal: 10,
+                            vertical: 5
+                        }
+                    },
+                };
 
-            document.getElementById('theme-toggle')?.addEventListener('click', function() {
+                // Buat chart baru
+                emplymentChart = new ApexCharts(document.querySelector("#emplymentChart"), {
+                    ...emplymentChartOption,
+                    ...(isDarkMode ? darkTheme : lightTheme)
+                });
+                emplymentChart.render();
+
+                religionChart = new ApexCharts(document.querySelector("#religionChart"), {
+                    ...religionChartOption,
+                    ...(isDarkMode ? darkTheme : lightTheme)
+                });
+                religionChart.render();
+            }
+
+            // Fungsi untuk toggle theme
+            function handleThemeToggle() {
                 isDarkMode = !isDarkMode;
-                emplymentChart.updateOptions(isDarkMode ? darkTheme : lightTheme);
-                religionChart.updateOptions(isDarkMode ? darkTheme : lightTheme);
+                localStorage.setItem('color-theme', isDarkMode ? 'dark' : 'light');
+
+                // Update chart dengan transition instan
+                if (emplymentChart) {
+                    emplymentChart.updateOptions(isDarkMode ? darkTheme : lightTheme, false, true);
+                }
+                if (religionChart) {
+                    religionChart.updateOptions(isDarkMode ? darkTheme : lightTheme, false, true);
+                }
+            }
+
+            // Setup event listener untuk theme toggle
+            function setupThemeToggle() {
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    // Hapus event listener sebelumnya untuk menghindari penumpukan
+                    themeToggle.removeEventListener('click', handleThemeToggle);
+                    themeToggle.addEventListener('click', handleThemeToggle);
+                }
+            }
+
+            // Inisialisasi pertama kali
+            initCharts();
+            setupThemeToggle();
+
+            // Cleanup saat komponen di-unmount (untuk Livewire)
+            Livewire.on('component-teardown', () => {
+                if (emplymentChart) {
+                    emplymentChart.destroy();
+                }
+                if (religionChart) {
+                    religionChart.destroy();
+                }
+                const themeToggle = document.getElementById('theme-toggle');
+                if (themeToggle) {
+                    themeToggle.removeEventListener('click', handleThemeToggle);
+                }
             });
 
         }, {once: true});
