@@ -40,7 +40,7 @@ $confirmPassword = function () {
     <form wire:submit="confirmPassword">
         <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('Password')" />
+            <x.ui-input-label for="password" :value="__('Password')" />
 
             <x-text-input wire:model="password"
                           id="password"
@@ -49,7 +49,7 @@ $confirmPassword = function () {
                           name="password"
                           required autocomplete="current-password" />
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            <x.ui-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <div class="flex justify-end mt-4">
