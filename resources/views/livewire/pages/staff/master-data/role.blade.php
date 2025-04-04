@@ -64,7 +64,7 @@ $destroy = function ($id) {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-                ['href' => route('dashboard'), 'text' => 'Dashboard'],
+                ['href' => '/', 'text' => 'Dashboard'],
                 ['text' => 'Master Data'],
                 ['text' => 'Peran Pengguna']
             ]">

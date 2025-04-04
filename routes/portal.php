@@ -3,12 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-Volt::route('/', 'pages.portal.home')->name('portal.home');
-Volt::route('read-news/{slug}', 'pages.portal.read-news')->name('portal.read-news');
-Volt::route('vision-mission', 'pages.portal.vision-mission')->name('portal.vision-mission');
-Volt::route('history', 'pages.portal.history')->name('portal.history');
-Volt::route('geography', 'pages.portal.geography')->name('portal.geography');
-Volt::route('structure-organization', 'pages.portal.structure')->name('portal.structure');
+Volt::route('/portal', 'pages.portal.home')->name('portal.home');
+Volt::route('portal/read-news/{slug}', 'pages.portal.read-news')->name('portal.read-news');
+Volt::route('portal/vision-mission', 'pages.portal.vision-mission')->name('portal.vision-mission');
+Volt::route('portal/history', 'pages.portal.history')->name('portal.history');
+Volt::route('portal/geography', 'pages.portal.geography')->name('portal.geography');
+Volt::route('portal/structure-organization', 'pages.portal.structure')->name('portal.structure');
 Route::middleware(['auth'])->group(function () {
   Volt::route('staff/portal/news-category', 'pages.staff.portal.news-category')->name('admin.portal.news-category');
   Volt::route('staff/portal/news', 'pages.staff.portal.news')->name('admin.portal.news');

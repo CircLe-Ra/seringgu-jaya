@@ -87,7 +87,8 @@ $destroy = function ($id) {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-        ['text' => 'Dashboard', 'href' => route('dashboard')],
+        ['href' => '/', 'text' => 'Dashboard'],
+        ['text' => 'Master Data'],
         ['text' => __('User'), 'href' => route('master-data.user')]
     ]">
         <x-slot name="actions">

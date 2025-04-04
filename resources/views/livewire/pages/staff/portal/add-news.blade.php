@@ -126,7 +126,7 @@ $post = function () {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-        ['href' => route('dashboard'), 'text' => 'Dashboard'],
+        ['href' => '/', 'text' => 'Dashboard'],
         ['text' => 'Portal'],
         ['href' => route('admin.portal.news'), 'text' => 'Informasi/Berita'],
         ['text' => 'Memposting Informasi/Berita'],

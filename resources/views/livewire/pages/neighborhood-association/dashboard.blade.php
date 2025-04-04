@@ -56,7 +56,7 @@ mount(function () {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-                ['href' => route('dashboard'), 'text' => 'Dashboard']
+               ['href' => '/', 'text' => 'Dashboard'],
             ]">
         <x-slot name="actions">
             <h1 class="text-xl py-[3.5px] font-medium text-gray-900 dark:text-white">Halo, {{ auth()->user()->name }} - {{ Carbon::parse(date('Y-m-d'))->locale('id')->isoFormat('D MMMM Y') }}</h1>

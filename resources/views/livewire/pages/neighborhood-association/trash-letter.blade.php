@@ -57,7 +57,7 @@ $editData = function ($id) {
 
 <div>
     <x-ui.breadcrumbs :crumbs="[
-        ['href' => route('dashboard'), 'text' => 'Dashboard'],
+        ['href' => '/', 'text' => 'Dashboard'],
         ['text' => 'Surat', 'href' => route('neighborhood-association.letter')],
         ['text' => 'Tempat Sampah'],
     ]">

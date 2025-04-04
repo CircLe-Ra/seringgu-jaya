@@ -14,7 +14,7 @@
                 </label>
             </div>
             @auth
-                <x-ui.button tag="link" href="{{ route('dashboard') }}" wire:navigate color="blue" size="md">Dashboard</x-ui.button>
+                <x-ui.button tag="link" href="/" wire:navigate color="blue" size="md">Dashboard</x-ui.button>
             @else
                 <x-ui.button tag="link" href="{{ route('login') }}" wire:navigate color="blue" size="md">Masuk</x-ui.button>
             @endauth
