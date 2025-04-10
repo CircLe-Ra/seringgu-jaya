@@ -130,6 +130,7 @@ mount(function () {
                         type: 'bar',
                         height: 650,
                         stacked: true,
+                        background: 'transparent',
                     },
                     plotOptions: {
                         bar: {
@@ -202,6 +203,7 @@ mount(function () {
                     chart: {
                         width: 340,
                         type: 'pie',
+                        background: 'transparent',
                     },
                     labels: @js($this->religion['label']),
                     responsive: [{

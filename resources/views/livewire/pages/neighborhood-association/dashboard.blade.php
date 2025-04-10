@@ -110,7 +110,8 @@ mount(function () {
                     type: 'bar',
                     height: 650,
                     stacked: true,
-                    toolbar: { show: false }
+                    toolbar: { show: false },
+                    background: 'transparent',
                 },
                 plotOptions: {
                     bar: {
@@ -166,6 +167,7 @@ mount(function () {
                 chart: {
                     width: 340,
                     type: 'pie',
+                    background: 'transparent',
                 },
                 labels: @js($this->religion['label'] ?? []),
                 title: {
